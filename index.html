@@ -205,7 +205,7 @@
     border: 1px solid var(--border); background: var(--bg);
     font-size: 15px; cursor: pointer; transition: all 0.15s;
   }
-  .feeling-btn.selected { border-color: var(--text-ghost); background: #1C1C1E; }
+  .feeling-btn.selected { border-color: var(--indigo); background: #1E1B3A; transform: scale(1.05); }
 
   /* Action buttons */
   .btn-row { display: flex; gap: 8px; margin-top: 12px; }
@@ -516,7 +516,7 @@ function renderTracker(weekData) {
       html += `<div><div class="field-label">Pasos</div><input class="input" type="number" placeholder="7000" value="${d.steps}" oninput="updateField(${day},'steps',this.value)"></div>`;
       html += `<div><div class="field-label">Cómo fue</div><div class="feeling-grid">`;
       FEELINGS.forEach(f => {
-        html += `<button class="feeling-btn ${d.feeling===f?'selected':''}" onclick="updateField(${day},'feeling','${f}')">${f}</button>`;
+        html += `<button class="feeling-btn ${d.feeling===f?'selected':''}" onclick="setFeeling(${day},'${f}')">${f}</button>`;
       });
       html += '</div></div></div>';
       // Notes
@@ -633,6 +633,12 @@ function updateField(day, field, value) {
   data.weeks[currentWeek].days[day][field] = value;
   save();
   // Don't re-render for inputs to avoid losing focus
+}
+
+function setFeeling(day, value) {
+  data.weeks[currentWeek].days[day].feeling = value;
+  save();
+  render();
 }
 
 function updateWeight(v) {
