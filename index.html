@@ -335,12 +335,12 @@
 const STORAGE_KEY = 'fitness-flex-v4';
 
 const BLOCKS = [
-  { id:'fullbody', label:'Full Body', icon:'🔴', color:'#EF4444', duration:'20 min', desc:'Flexiones, sentadillas, abdominales, plancha', exercises:[{name:'Flexiones',reps:'12–14'},{name:'Sentadillas',reps:'15–18'},{name:'Abdominales',reps:'20–25'},{name:'Plancha',reps:'30–35s'}], rounds:'2–3 rondas' },
-  { id:'variacion', label:'Variación', icon:'🟠', color:'#F97316', duration:'20 min', desc:'Flexiones lentas, sentadillas c/pausa, zancadas, plancha lateral', exercises:[{name:'Flexiones lentas',reps:'10–12'},{name:'Sentadillas c/pausa',reps:'12–15'},{name:'Zancadas/pierna',reps:'12'},{name:'Plancha lateral/lado',reps:'20–30s'}], rounds:'2–3 rondas' },
-  { id:'fuerza', label:'Día Fuerte', icon:'🟢', color:'#22C55E', duration:'30–40 min', desc:'Fuerza completa: flexiones, sentadillas, zancadas, plancha', exercises:[{name:'Flexiones',reps:'12–15'},{name:'Sentadillas',reps:'15–20'},{name:'Zancadas/pierna',reps:'10–12'},{name:'Plancha',reps:'30–40s'}], rounds:'3–4 rondas' },
-  { id:'futbol', label:'Fútbol 7', icon:'⚽', color:'#EAB308', duration:'60–90 min', desc:'Liga — cuenta como HIIT/cardio', exercises:[{name:'Partido completo',reps:'—'}], rounds:'Cardio semanal' },
+  { id:'fullbody', label:'Full Body', icon:'🔴', color:'#EF4444', duration:'22 min', desc:'Progresión: más reps, plancha más larga', exercises:[{name:'Flexiones',reps:'15'},{name:'Sentadillas',reps:'20'},{name:'Abdominales',reps:'25'},{name:'Plancha',reps:'40s'}], rounds:'3 rondas' },
+  { id:'variacion', label:'Variación', icon:'🟠', color:'#F97316', duration:'22 min', desc:'Más control + 1 ronda extra opcional', exercises:[{name:'Flexiones lentas (3s bajada)',reps:'12'},{name:'Sentadillas c/pausa (2s abajo)',reps:'15'},{name:'Zancadas/pierna',reps:'14'},{name:'Plancha lateral/lado',reps:'30s'}], rounds:'3 rondas' },
+  { id:'fuerza', label:'Día Fuerte', icon:'🟢', color:'#22C55E', duration:'25–30 min', desc:'Ahora SÍ es fuerte: 4 rondas, ejercicio extra, descansos cortos', exercises:[{name:'Flexiones',reps:'15'},{name:'Sentadillas',reps:'20'},{name:'Zancadas/pierna',reps:'12'},{name:'Puente glúteo',reps:'15'},{name:'Plancha',reps:'45s'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'4 rondas' },
+  { id:'futbol', label:'Fútbol 7', icon:'⚽', color:'#EAB308', duration:'40–60 min', desc:'Liga — cuenta como HIIT/cardio', exercises:[{name:'Partido completo',reps:'—'}], rounds:'Cardio semanal' },
   { id:'hiit', label:'HIIT', icon:'🟡', color:'#EAB308', duration:'20–25 min', desc:'Jumping jacks, mountain climbers, burpees + core', exercises:[{name:'Jumping jacks',reps:'30s'},{name:'Mountain climbers',reps:'30s'},{name:'Burpees',reps:'20–30s'},{name:'Descanso',reps:'30–40s'},{name:'Abdominales',reps:'15–20'},{name:'Plancha',reps:'20–30s'}], rounds:'3–4 rondas' },
-  { id:'caminar', label:'Caminar', icon:'🚶', color:'#3B82F6', duration:'20–30 min', desc:'Caminata activa, recuperación', exercises:[{name:'Caminata suave/activa',reps:'20–30 min'}], rounds:'' },
+  { id:'caminar', label:'Caminar', icon:'🚶', color:'#3B82F6', duration:'30 min', desc:'Caminata activa — meta: 6,000 pasos al día', exercises:[{name:'Caminata activa',reps:'30 min'},{name:'Tip: post-almuerzo',reps:'15 min'},{name:'Tip: llamadas de pie',reps:'+pasos'}], rounds:'' },
   { id:'libre', label:'Mov. Libre', icon:'🏃', color:'#8B5CF6', duration:'—', desc:'Deporte, bici, lo que sea', exercises:[{name:'Actividad a elección',reps:'—'}], rounds:'' },
 ];
 
@@ -451,7 +451,7 @@ function render() {
   // Stats
   html += '<div class="stats">';
   html += `<div class="stat"><div class="stat-label">Hechos</div><div class="stat-val">${s.completed}/${s.assigned||'—'}</div><div class="stat-sub">esta semana</div></div>`;
-  html += `<div class="stat"><div class="stat-label">Pasos Ø</div><div class="stat-val">${s.avgSteps>0?s.avgSteps.toLocaleString():'—'}</div><div class="stat-sub">${s.avgSteps>=7000?'✓ meta':'meta 7k'}</div></div>`;
+  html += `<div class="stat"><div class="stat-label">Pasos Ø</div><div class="stat-val">${s.avgSteps>0?s.avgSteps.toLocaleString():'—'}</div><div class="stat-sub">${s.avgSteps>=6000?'✓ meta':'meta 6k'}</div></div>`;
   html += `<div class="stat"><div class="stat-label">Peso</div><div class="stat-val">${data.weight.current||'—'}</div><div class="stat-sub">${wd?`${Number(wd)>0?'+':''}${wd} kg`:'registrar'}</div></div>`;
   html += '</div>';
 
