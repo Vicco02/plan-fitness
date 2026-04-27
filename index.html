@@ -440,20 +440,21 @@ function render() {
     <p>Asigna bloques a los días que quieras</p>
   </div>`;
 
-  // Week selector
-  html += '<div class="weeks">';
-  Object.keys(data.weeks).forEach(w => {
-    html += `<button class="week-btn ${Number(w)===currentWeek?'active':''}" onclick="selectWeek(${w})">Sem ${w}</button>`;
-  });
-  html += `<button class="week-add" onclick="addWeek()">+</button>`;
-  html += '</div>';
+  // Week selector + stats only on tracker view
+  if (view === 'tracker') {
+    html += '<div class="weeks">';
+    Object.keys(data.weeks).forEach(w => {
+      html += `<button class="week-btn ${Number(w)===currentWeek?'active':''}" onclick="selectWeek(${w})">Sem ${w}</button>`;
+    });
+    html += `<button class="week-add" onclick="addWeek()">+</button>`;
+    html += '</div>';
 
-  // Stats
-  html += '<div class="stats">';
-  html += `<div class="stat"><div class="stat-label">Hechos</div><div class="stat-val">${s.completed}/${s.assigned||'—'}</div><div class="stat-sub">esta semana</div></div>`;
-  html += `<div class="stat"><div class="stat-label">Pasos Ø</div><div class="stat-val">${s.avgSteps>0?s.avgSteps.toLocaleString():'—'}</div><div class="stat-sub">${s.avgSteps>=6000?'✓ meta':'meta 6k'}</div></div>`;
-  html += `<div class="stat"><div class="stat-label">Peso</div><div class="stat-val">${data.weight.current||'—'}</div><div class="stat-sub">${wd?`${Number(wd)>0?'+':''}${wd} kg`:'registrar'}</div></div>`;
-  html += '</div>';
+    html += '<div class="stats">';
+    html += `<div class="stat"><div class="stat-label">Hechos</div><div class="stat-val">${s.completed}/${s.assigned||'—'}</div><div class="stat-sub">esta semana</div></div>`;
+    html += `<div class="stat"><div class="stat-label">Pasos Ø</div><div class="stat-val">${s.avgSteps>0?s.avgSteps.toLocaleString():'—'}</div><div class="stat-sub">${s.avgSteps>=6000?'✓ meta':'meta 6k'}</div></div>`;
+    html += `<div class="stat"><div class="stat-label">Peso</div><div class="stat-val">${data.weight.current||'—'}</div><div class="stat-sub">${wd?`${Number(wd)>0?'+':''}${wd} kg`:'registrar'}</div></div>`;
+    html += '</div>';
+  }
 
   // Views
   if (view === 'tracker') html += renderTracker(weekData);
@@ -592,7 +593,7 @@ function renderNav() {
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 // Actions
-function selectWeek(w) { currentWeek = Number(w); activeDay = null; picking = null; render(); }
+function selectWeek(w) { currentWeek = Number(w); activeDay = null; picking = null; view = 'tracker'; render(); }
 function addWeek() {
   const next = Math.max(...Object.keys(data.weeks).map(Number)) + 1;
   data.weeks[next] = defaultWeek();
