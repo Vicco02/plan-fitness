@@ -89,6 +89,49 @@
     transition: all 0.15s;
   }
   .week-btn.active { border-color: var(--text-ghost); background: var(--border); color: #fff; }
+  .week-wrap { display: flex; align-items: center; gap: 2px; }
+  .week-del {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid #2D1515; background: var(--red-bg);
+    color: var(--red-light); font-size: 11px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    margin-left: -4px; transition: all 0.15s;
+  }
+  .week-del:active { transform: scale(0.9); }
+
+  /* Drag handle on day rows */
+  .day-row { position: relative; }
+  .drag-handle {
+    color: var(--text-ghost); font-size: 14px;
+    cursor: grab; user-select: none;
+    padding: 4px 6px; touch-action: none;
+  }
+  .drag-handle:active { cursor: grabbing; }
+  .day-row.dragging { opacity: 0.4; }
+  .day-row.drag-over { border-color: var(--indigo); background: #1E1B3A; }
+
+  /* Swap mode */
+  .swap-bar { margin-bottom: 8px; }
+  .swap-btn {
+    width: 100%; padding: 8px 12px; border-radius: 8px;
+    border: 1px dashed var(--border-hover); background: transparent;
+    color: var(--text-faint); font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: var(--font);
+    transition: all 0.15s;
+  }
+  .swap-btn.active {
+    background: #1E1B3A; border: 1px solid var(--indigo);
+    color: var(--indigo); border-style: solid;
+  }
+  .day-row.swap-selected {
+    border-color: var(--indigo) !important;
+    background: #1E1B3A !important;
+  }
+  .swap-icon {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--text-faint);
+  }
   .week-add {
     width: 34px; height: 34px; border-radius: 8px;
     border: 1px dashed var(--border-hover); background: transparent;
@@ -335,12 +378,12 @@
 const STORAGE_KEY = 'fitness-flex-v4';
 
 const BLOCKS = [
-  { id:'fullbody', label:'Full Body', icon:'🔴', color:'#EF4444', duration:'25 min', desc:'Orden nuevo: abs y plancha separados para mejor forma', exercises:[{name:'Flexiones (puños o toalla)',reps:'15'},{name:'Sentadillas',reps:'20'},{name:'Plancha',reps:'40s'},{name:'Puente glúteo',reps:'15'},{name:'Abdominales',reps:'25'},{name:'Descanso entre rondas',reps:'45s'}], rounds:'3 rondas' },
-  { id:'variacion', label:'Variación', icon:'🟠', color:'#F97316', duration:'25 min', desc:'Menos zancadas, más variedad. Flexiones con puños o toalla.', exercises:[{name:'Flexiones lentas (3s bajada, puños)',reps:'12'},{name:'Sentadillas búlgaras/pierna',reps:'8'},{name:'Superman (espalda baja)',reps:'12'},{name:'Plancha lateral/lado',reps:'30s'},{name:'Descanso entre rondas',reps:'45s'}], rounds:'3 rondas' },
-  { id:'fuerza', label:'Día Fuerte', icon:'🟢', color:'#22C55E', duration:'30–35 min', desc:'Ejercicios variados, menos repetición pierna. Puños en flexiones.', exercises:[{name:'Flexiones diamante (puños)',reps:'10'},{name:'Sentadillas sumo',reps:'18'},{name:'Puente glúteo elevado',reps:'15'},{name:'Mountain climbers',reps:'30s'},{name:'Plancha',reps:'50s'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'4 rondas' },
+  { id:'fullbody', label:'Full Body', icon:'🔴', color:'#EF4444', duration:'25 min', desc:'Abs divididos en 2 series para mejor forma', exercises:[{name:'Flexiones (puños o toalla)',reps:'18'},{name:'Sentadillas',reps:'22'},{name:'Plancha',reps:'45s'},{name:'Puente glúteo',reps:'18'},{name:'Abdominales (2x15)',reps:'2x15'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'3 rondas' },
+  { id:'variacion', label:'Variación', icon:'🟠', color:'#F97316', duration:'25 min', desc:'Más control + crunch bicicleta para variar abs', exercises:[{name:'Flexiones lentas (3s bajada, puños)',reps:'14'},{name:'Sentadillas búlgaras/pierna',reps:'10'},{name:'Superman',reps:'15'},{name:'Crunch bicicleta',reps:'20'},{name:'Plancha lateral/lado',reps:'35s'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'3 rondas' },
+  { id:'fuerza', label:'Día Fuerte', icon:'🟢', color:'#22C55E', duration:'30–35 min', desc:'Plancha en 2 series para evitar fatiga acumulada', exercises:[{name:'Flexiones diamante (puños)',reps:'12'},{name:'Sentadillas sumo',reps:'20'},{name:'Puente glúteo elevado',reps:'18'},{name:'Mountain climbers',reps:'40s'},{name:'Plancha (2x30s c/15s pausa)',reps:'2x30s'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'4 rondas' },
   { id:'futbol', label:'Fútbol 7', icon:'⚽', color:'#EAB308', duration:'40–60 min', desc:'Liga — cuenta como HIIT/cardio', exercises:[{name:'Partido completo',reps:'—'}], rounds:'Cardio semanal' },
-  { id:'hiit', label:'HIIT', icon:'🟡', color:'#EAB308', duration:'20–25 min', desc:'Jumping jacks, mountain climbers, burpees + core', exercises:[{name:'Jumping jacks',reps:'30s'},{name:'Mountain climbers',reps:'30s'},{name:'Burpees',reps:'30s'},{name:'Descanso',reps:'30s'},{name:'Abdominales',reps:'20'},{name:'Plancha',reps:'30s'}], rounds:'4 rondas' },
-  { id:'caminar', label:'Caminar', icon:'🚶', color:'#3B82F6', duration:'30–40 min', desc:'Meta: 6,000+ pasos al día', exercises:[{name:'Caminata activa',reps:'30–40 min'},{name:'Tip: post-almuerzo',reps:'15 min'},{name:'Tip: días de entreno caminar al menos 3k extra',reps:''}], rounds:'' },
+  { id:'hiit', label:'HIIT', icon:'🟡', color:'#EAB308', duration:'25 min', desc:'4 rondas con 45s descanso. Sin descanso extra.', exercises:[{name:'Jumping jacks',reps:'30s'},{name:'Mountain climbers',reps:'30s'},{name:'Burpees',reps:'30s'},{name:'Descanso',reps:'45s'},{name:'Abdominales',reps:'20'},{name:'Plancha',reps:'30s'}], rounds:'4 rondas' },
+  { id:'caminar', label:'Caminar', icon:'🚶', color:'#3B82F6', duration:'35–40 min', desc:'Meta: 6,000+ pasos al día', exercises:[{name:'Caminata activa',reps:'35–40 min'},{name:'Tip: post-almuerzo',reps:'15 min'},{name:'Tip: días de entreno caminar 3k extra',reps:''}], rounds:'' },
   { id:'libre', label:'Mov. Libre', icon:'🏃', color:'#8B5CF6', duration:'—', desc:'Deporte, bici, lo que sea', exercises:[{name:'Actividad a elección',reps:'—'}], rounds:'' },
 ];
 
@@ -365,6 +408,8 @@ let activeDay = null;
 let picking = null;
 let view = 'tracker';
 let copied = false;
+let swapMode = false;
+let swapFirst = null;
 
 // Load
 function load() {
@@ -444,7 +489,13 @@ function render() {
   if (view === 'tracker') {
     html += '<div class="weeks">';
     Object.keys(data.weeks).forEach(w => {
-      html += `<button class="week-btn ${Number(w)===currentWeek?'active':''}" onclick="selectWeek(${w})">Sem ${w}</button>`;
+      const wNum = Number(w);
+      const isActive = wNum === currentWeek;
+      html += `<div class="week-wrap"><button class="week-btn ${isActive?'active':''}" onclick="selectWeek(${w})">Sem ${w}</button>`;
+      if (isActive && Object.keys(data.weeks).length > 1) {
+        html += `<button class="week-del" onclick="deleteWeek(${w})" title="Eliminar semana">✕</button>`;
+      }
+      html += '</div>';
     });
     html += `<button class="week-add" onclick="addWeek()">+</button>`;
     html += '</div>';
@@ -474,6 +525,14 @@ function render() {
 
 function renderTracker(weekData) {
   let html = '';
+
+  // Swap mode toggle
+  html += `<div class="swap-bar">
+    <button class="swap-btn ${swapMode?'active':''}" onclick="toggleSwapMode()">
+      ${swapMode ? '✓ Toca 2 días para intercambiar' : '🔄 Reordenar días'}
+    </button>
+  </div>`;
+
   for (let day = 1; day <= 7; day++) {
     const d = weekData.days[day];
     const block = d.workout ? getBlock(d.workout) : null;
@@ -481,16 +540,26 @@ function renderTracker(weekData) {
     const isActive = activeDay === key;
     const isPicking = picking === key;
     const isOpen = isActive || isPicking;
+    const isSwapFirst = swapMode && swapFirst === day;
 
-    html += `<div class="day-row ${isOpen?'open':''} ${d.completed?'done':''}" onclick="dayClick(${day})">`;
+    html += `<div class="day-row ${isOpen?'open':''} ${d.completed?'done':''} ${isSwapFirst?'swap-selected':''}" onclick="dayClick(${day})">`;
     html += `<div class="day-label">${DAYS[day-1]}</div>`;
     if (block) {
       html += `<div><div class="day-workout ${d.completed?'done-text':''}">${block.icon} ${block.label}</div>
         <div class="day-meta">${block.duration}${block.rounds?' · '+block.rounds:''}</div></div>`;
       html += `<div class="day-steps">${d.steps?Number(d.steps).toLocaleString()+'👣':''}</div>`;
-      html += `<button class="check-btn ${d.completed?'checked':''}" onclick="event.stopPropagation();toggleCheck(${day})">${d.completed?'✓':''}</button>`;
+      if (swapMode) {
+        html += `<div class="swap-icon">${isSwapFirst?'1️⃣':'↕'}</div>`;
+      } else {
+        html += `<button class="check-btn ${d.completed?'checked':''}" onclick="event.stopPropagation();toggleCheck(${day})">${d.completed?'✓':''}</button>`;
+      }
     } else {
-      html += `<div class="day-empty">Toca para asignar...</div><div></div><div style="width:30px"></div>`;
+      html += `<div class="day-empty">Toca para asignar...</div><div></div>`;
+      if (swapMode) {
+        html += `<div class="swap-icon">${isSwapFirst?'1️⃣':'↕'}</div>`;
+      } else {
+        html += `<div style="width:30px"></div>`;
+      }
     }
     html += '</div>';
 
@@ -599,14 +668,72 @@ function addWeek() {
   data.weeks[next] = defaultWeek();
   save(); currentWeek = next; render();
 }
+function deleteWeek(w) {
+  const weekNum = Number(w);
+  const stats = weekStats(weekNum);
+  const hasData = stats.completed > 0 || stats.avgSteps > 0;
+  const msg = hasData
+    ? `¿Eliminar Semana ${weekNum}? Tiene ${stats.completed} entrenos registrados y se perderán.`
+    : `¿Eliminar Semana ${weekNum}?`;
+  if (!confirm(msg)) return;
+  delete data.weeks[weekNum];
+  // If we deleted current week, switch to first available
+  if (currentWeek === weekNum) {
+    const remaining = Object.keys(data.weeks).map(Number).sort((a,b)=>a-b);
+    currentWeek = remaining[0] || 1;
+    if (remaining.length === 0) {
+      data.weeks[1] = defaultWeek();
+    }
+  }
+  activeDay = null; picking = null;
+  save(); render();
+}
+function swapDays(fromDay, toDay) {
+  const week = data.weeks[currentWeek];
+  const tmp = week.days[fromDay];
+  week.days[fromDay] = week.days[toDay];
+  week.days[toDay] = tmp;
+  save();
+  draggedDay = null;
+  render();
+}
 function switchView(v) { view = v; activeDay = null; picking = null; render(); }
 
 function dayClick(day) {
+  if (swapMode) {
+    if (swapFirst === null) {
+      swapFirst = day;
+      render();
+      return;
+    }
+    if (swapFirst === day) {
+      swapFirst = null;
+      render();
+      return;
+    }
+    // Perform swap
+    const week = data.weeks[currentWeek];
+    const tmp = week.days[swapFirst];
+    week.days[swapFirst] = week.days[day];
+    week.days[day] = tmp;
+    save();
+    swapFirst = null;
+    render();
+    return;
+  }
   const key = `${currentWeek}-${day}`;
   if (picking === key) { picking = null; render(); return; }
   const d = data.weeks[currentWeek].days[day];
   if (!d.workout) { picking = key; activeDay = null; }
   else { activeDay = activeDay === key ? null : key; picking = null; }
+  render();
+}
+
+function toggleSwapMode() {
+  swapMode = !swapMode;
+  swapFirst = null;
+  activeDay = null;
+  picking = null;
   render();
 }
 
