@@ -429,9 +429,12 @@ function weekStats(wk) {
   const w = data.weeks[wk];
   const completed = Object.values(w.days).filter(d => d.completed).length;
   const assigned = Object.values(w.days).filter(d => d.workout).length;
-  const stepsArr = Object.values(w.days).map(d => Number(d.steps)).filter(s => s > 0);
-  const avgSteps = stepsArr.length ? Math.round(stepsArr.reduce((a,b)=>a+b,0)/stepsArr.length) : 0;
-  return { completed, assigned, avgSteps };
+  // Count steps over all days that have ANY activity (completed workout, steps, feeling, or notes)
+  // Days with no activity yet (e.g. future days) don't count. Days "lived" without registered steps count as 0.
+  const activeDays = Object.values(w.days).filter(d => d.completed || d.steps || d.feeling || d.notes);
+  const totalSteps = activeDays.reduce((sum, d) => sum + (Number(d.steps) || 0), 0);
+  const avgSteps = activeDays.length ? Math.round(totalSteps / activeDays.length) : 0;
+  return { completed, assigned, avgSteps, activeDays: activeDays.length };
 }
 
 function weightDiff() {
