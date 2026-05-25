@@ -1,4 +1,4 @@
-const CACHE_NAME = 'plan-flex-v5';
+const CACHE_NAME = 'plan-flex-v6';
 const ASSETS = [
   './',
   './index.html',

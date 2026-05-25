@@ -509,6 +509,7 @@ function render() {
 
   // Views
   if (view === 'tracker') html += renderTracker(weekData);
+  else if (view === 'progress') html += renderProgress();
   else if (view === 'blocks') html += renderBlocks();
   else if (view === 'peso') html += renderWeight(wd);
   else if (view === 'export') html += renderExport();
@@ -602,6 +603,76 @@ function renderTracker(weekData) {
   return html;
 }
 
+function renderProgress() {
+  const weeks = Object.keys(data.weeks).map(Number).sort((a,b)=>a-b);
+  if (weeks.length === 0) return '<p style="color:var(--text-faint);text-align:center;padding:40px 0">Sin datos aún</p>';
+
+  let html = '<div class="panel-label" style="margin-bottom:12px">Evolución por semana</div>';
+
+  // Compute global max for steps bar scaling
+  const allStats = weeks.map(w => weekStats(w));
+  const maxSteps = Math.max(...allStats.map(s => s.avgSteps), 7000);
+
+  html += '<div style="display:flex;flex-direction:column;gap:8px">';
+  weeks.forEach((w, i) => {
+    const s = allStats[i];
+    const stepsPct = Math.min(100, (s.avgSteps / maxSteps) * 100);
+    const completionPct = s.assigned > 0 ? (s.completed / s.assigned) * 100 : 0;
+    const stepsColor = s.avgSteps >= 6000 ? 'var(--green)' : s.avgSteps >= 4500 ? 'var(--yellow)' : 'var(--orange)';
+
+    html += `<div style="background:var(--surface);border-radius:10px;padding:14px;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:700;color:#fff">Semana ${w}</div>
+        <div style="font-size:11px;color:${s.completed === s.assigned && s.assigned > 0 ? 'var(--green-dim)' : 'var(--text-faint)'};font-family:var(--mono)">
+          ${s.completed}/${s.assigned || '—'} ${s.completed === s.assigned && s.assigned > 0 ? '✓' : ''}
+        </div>
+      </div>
+      <div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-faint);margin-bottom:3px">
+          <span>PASOS Ø</span>
+          <span style="font-family:var(--mono);color:${stepsColor}">${s.avgSteps > 0 ? s.avgSteps.toLocaleString() : '—'}</span>
+        </div>
+        <div style="height:6px;background:#0a0a0c;border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${stepsPct}%;background:${stepsColor};border-radius:3px;transition:width 0.3s"></div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-faint);margin-bottom:3px">
+          <span>COMPLETADO</span>
+          <span style="font-family:var(--mono)">${Math.round(completionPct)}%</span>
+        </div>
+        <div style="height:6px;background:#0a0a0c;border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${completionPct}%;background:var(--green);border-radius:3px;transition:width 0.3s"></div>
+        </div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+
+  // Summary card
+  const totalCompleted = allStats.reduce((sum, s) => sum + s.completed, 0);
+  const validWeeks = allStats.filter(s => s.avgSteps > 0);
+  const overallAvgSteps = validWeeks.length > 0
+    ? Math.round(validWeeks.reduce((sum, s) => sum + s.avgSteps, 0) / validWeeks.length)
+    : 0;
+
+  html += `<div style="margin-top:16px;background:linear-gradient(135deg,#111127,#0F1A2E);border-radius:10px;padding:16px;border:1px solid #1E2545">
+    <div style="font-size:11px;color:var(--indigo);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Acumulado total</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="font-size:22px;font-weight:700;color:#fff;font-family:var(--mono)">${totalCompleted}</div>
+        <div style="font-size:10px;color:var(--text-faint)">entrenos hechos</div>
+      </div>
+      <div>
+        <div style="font-size:22px;font-weight:700;color:#fff;font-family:var(--mono)">${overallAvgSteps > 0 ? overallAvgSteps.toLocaleString() : '—'}</div>
+        <div style="font-size:10px;color:var(--text-faint)">pasos Ø histórico</div>
+      </div>
+    </div>
+  </div>`;
+
+  return html;
+}
+
 function renderBlocks() {
   let html = '<p style="font-size:12px;color:#3F3F46;margin:0 0 12px">Bloques disponibles. Asígnalos en la pestaña "Semana".</p>';
   BLOCKS.forEach(b => {
@@ -649,6 +720,7 @@ function renderExport() {
 function renderNav() {
   const tabs = [
     { k:'tracker', icon:'📋', l:'Semana' },
+    { k:'progress', icon:'📊', l:'Progreso' },
     { k:'blocks', icon:'🧱', l:'Bloques' },
     { k:'peso', icon:'⚖️', l:'Peso' },
     { k:'export', icon:'📤', l:'Exportar' },
