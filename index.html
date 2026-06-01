@@ -397,7 +397,7 @@ function defaultWeek() {
     4: defaultDay('fuerza'), 5: defaultDay('caminar'), 6: defaultDay('libre'), 7: defaultDay(null)
   }};
 }
-function defaultState() { return { weeks:{1:defaultWeek(),2:defaultWeek()}, weight:{start:76.3,current:''} }; }
+function defaultState() { return { weeks:{1:defaultWeek(),2:defaultWeek()}, weight:{start:76.3,current:''}, waist:{start:'',current:''} }; }
 
 function getBlock(id) { return BLOCKS.find(b => b.id === id); }
 
@@ -417,6 +417,8 @@ function load() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) data = JSON.parse(raw);
   } catch(e) { console.error('Load error', e); }
+  // Migration: ensure waist field exists for older saved data
+  if (!data.waist) data.waist = { start:'', current:'' };
 }
 
 function save() {
@@ -448,6 +450,9 @@ function generateSummary() {
   lines.push(`Peso actual: ${data.weight.current || 'no registrado'}`);
   const wd = weightDiff();
   if (wd) lines.push(`Cambio: ${Number(wd)>0?'+':''}${wd} kg`);
+  if (data.waist && (data.waist.start || data.waist.current)) {
+    lines.push(`Cintura inicio: ${data.waist.start || '—'} cm | actual: ${data.waist.current || '—'} cm`);
+  }
   lines.push('');
   Object.keys(data.weeks).sort((a,b)=>Number(a)-Number(b)).forEach(wk => {
     const w = data.weeks[wk];
@@ -696,12 +701,29 @@ function renderWeight(wd) {
   html += '<div class="weight-grid"><div><div style="font-size:11px;color:#3F3F46;margin-bottom:4px">Inicio</div>';
   html += `<div class="weight-start">${data.weight.start}<span class="weight-unit"> kg</span></div></div>`;
   html += `<div><div style="font-size:11px;color:#3F3F46;margin-bottom:4px">Actual</div>`;
-  html += `<input class="input-big" type="number" step="0.1" placeholder="75.5" value="${data.weight.current}" oninput="updateWeight(this.value)"></div></div>`;
+  html += `<input class="input-big" type="number" step="0.1" placeholder="75.1" value="${data.weight.current}" oninput="updateWeight(this.value)"></div></div>`;
   if (wd) {
     const loss = Number(wd) <= 0;
-    html += `<div class="weight-diff ${loss?'loss':'gain'}">${loss?'↓':'↑'} ${Math.abs(Number(wd))} kg<span class="note">${loss?'Vas bien':'Normal al inicio'}</span></div>`;
+    html += `<div class="weight-diff ${loss?'loss':'gain'}">${loss?'↓':'↑'} ${Math.abs(Number(wd))} kg<span class="note">${loss?'Vas bien':'Puede ser músculo o agua'}</span></div>`;
   }
   html += '</div>';
+
+  // Waist tracking
+  const waistDiff = (data.waist.start && data.waist.current)
+    ? (Number(data.waist.current) - Number(data.waist.start)).toFixed(1) : null;
+  html += '<div class="weight-card">';
+  html += '<div class="panel-label" style="margin-bottom:6px">Cintura (mejor que el peso)</div>';
+  html += '<p style="font-size:11px;color:var(--text-faint);margin:0 0 14px;line-height:1.5">Mide a la altura del ombligo, relajado. Cada 2 semanas. Baja aunque el peso no se mueva.</p>';
+  html += '<div class="weight-grid"><div><div style="font-size:11px;color:#3F3F46;margin-bottom:4px">Inicio (cm)</div>';
+  html += `<input class="input-big" type="number" step="0.5" placeholder="—" value="${data.waist.start}" oninput="updateWaist('start',this.value)"></div>`;
+  html += `<div><div style="font-size:11px;color:#3F3F46;margin-bottom:4px">Actual (cm)</div>`;
+  html += `<input class="input-big" type="number" step="0.5" placeholder="—" value="${data.waist.current}" oninput="updateWaist('current',this.value)"></div></div>`;
+  if (waistDiff) {
+    const loss = Number(waistDiff) <= 0;
+    html += `<div class="weight-diff ${loss?'loss':'gain'}">${loss?'↓':'↑'} ${Math.abs(Number(waistDiff))} cm<span class="note">${loss?'Buen progreso':'Sigue así'}</span></div>`;
+  }
+  html += '</div>';
+
   html += `<div style="background:var(--surface);border-radius:10px;padding:16px;border:1px solid var(--border)">
     <button class="btn-reset" onclick="resetAll()">Resetear todo</button></div>`;
   return html;
@@ -846,6 +868,11 @@ function setFeeling(day, value) {
 
 function updateWeight(v) {
   data.weight.current = v;
+  save();
+}
+
+function updateWaist(field, v) {
+  data.waist[field] = v;
   save();
 }
 
