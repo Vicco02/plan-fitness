@@ -133,13 +133,38 @@
     font-size: 14px; color: var(--text-faint);
   }
   .week-add {
-    width: 34px; height: 34px; border-radius: 8px;
+    width: 40px; height: 44px; border-radius: 10px;
     border: 1px dashed var(--border-hover); background: transparent;
-    color: var(--text-faint); font-size: 18px; cursor: pointer;
+    color: var(--text-faint); font-size: 20px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
   }
 
-  /* Tabs */
+  /* Week nav stepper */
+  .week-nav { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; }
+  .week-arrow {
+    width: 40px; height: 44px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); font-size: 22px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; font-family: var(--font);
+  }
+  .week-arrow:active:not(:disabled) { background: var(--border); transform: scale(0.95); }
+  .week-arrow:disabled { opacity: 0.25; cursor: default; }
+  .week-current {
+    flex: 1; height: 44px; border-radius: 10px;
+    background: var(--border); border: 1px solid var(--border-hover);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .week-current-label { font-size: 15px; font-weight: 700; color: #fff; }
+  .week-current-sub { font-size: 10px; color: var(--text-faint); font-family: var(--mono); }
+  .week-del-nav {
+    width: 40px; height: 44px; border-radius: 10px;
+    border: 1px solid #2D1515; background: var(--red-bg);
+    color: var(--red-light); font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .week-del-nav:active { transform: scale(0.95); }
   .tabs { display: flex; gap: 3px; margin-bottom: 18px; background: var(--surface); border-radius: 9px; padding: 3px; }
   .tab {
     flex: 1; padding: 9px 0; border-radius: 7px; border: none;
@@ -420,6 +445,9 @@ function load() {
   } catch(e) { console.error('Load error', e); }
   // Migration: ensure waist field exists for older saved data
   if (!data.waist) data.waist = { start:'', current:'' };
+  // Start on the latest week so you don't have to switch every time
+  const weekNums = Object.keys(data.weeks).map(Number);
+  if (weekNums.length) currentWeek = Math.max(...weekNums);
 }
 
 function save() {
@@ -496,17 +524,23 @@ function render() {
 
   // Week selector + stats only on tracker view
   if (view === 'tracker') {
-    html += '<div class="weeks">';
-    Object.keys(data.weeks).forEach(w => {
-      const wNum = Number(w);
-      const isActive = wNum === currentWeek;
-      html += `<div class="week-wrap"><button class="week-btn ${isActive?'active':''}" onclick="selectWeek(${w})">Sem ${w}</button>`;
-      if (isActive && Object.keys(data.weeks).length > 1) {
-        html += `<button class="week-del" onclick="deleteWeek(${w})" title="Eliminar semana">✕</button>`;
-      }
-      html += '</div>';
-    });
-    html += `<button class="week-add" onclick="addWeek()">+</button>`;
+    const weekNums = Object.keys(data.weeks).map(Number).sort((a,b)=>a-b);
+    const idx = weekNums.indexOf(currentWeek);
+    const prevW = idx > 0 ? weekNums[idx-1] : null;
+    const nextW = idx < weekNums.length-1 ? weekNums[idx+1] : null;
+    const canDelete = weekNums.length > 1;
+
+    html += '<div class="week-nav">';
+    html += `<button class="week-arrow" ${prevW===null?'disabled':''} onclick="${prevW!==null?`selectWeek(${prevW})`:''}">‹</button>`;
+    html += `<div class="week-current">
+      <span class="week-current-label">Semana ${currentWeek}</span>
+      <span class="week-current-sub">${idx+1} de ${weekNums.length}</span>
+    </div>`;
+    html += `<button class="week-arrow" ${nextW===null?'disabled':''} onclick="${nextW!==null?`selectWeek(${nextW})`:''}">›</button>`;
+    html += `<button class="week-add" onclick="addWeek()" title="Añadir semana">+</button>`;
+    if (canDelete) {
+      html += `<button class="week-del-nav" onclick="deleteWeek(${currentWeek})" title="Eliminar esta semana">✕</button>`;
+    }
     html += '</div>';
 
     html += '<div class="stats">';
