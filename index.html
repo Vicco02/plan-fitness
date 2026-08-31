@@ -5,946 +5,867 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#09090B">
-<title>Plan Flexible</title>
+<meta name="theme-color" content="#14110F">
+<title>Plan</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #09090B;
-    --surface: #111113;
-    --border: #18181B;
-    --border-hover: #27272A;
-    --text: #E4E4E7;
-    --text-dim: #A1A1AA;
-    --text-muted: #71717A;
-    --text-faint: #52525B;
-    --text-ghost: #3F3F46;
-    --green: #22C55E;
-    --green-dim: #4ADE80;
-    --green-bg: #09120D;
-    --green-border: #14532D40;
-    --red: #EF4444;
-    --red-light: #F87171;
-    --red-bg: #170E0E;
-    --red-border: #7F1D1D30;
-    --yellow: #EAB308;
-    --orange: #F97316;
-    --blue: #3B82F6;
-    --purple: #8B5CF6;
-    --indigo: #818CF8;
-    --font: 'DM Sans', -apple-system, sans-serif;
-    --mono: 'JetBrains Mono', monospace;
+    --ink: #14110F;
+    --surface: #1E1A17;
+    --surface-2: #29231F;
+    --line: #352E28;
+    --line-soft: #241F1B;
+    --paper: #F2EDE6;
+    --paper-dim: #B3A79A;
+    --paper-faint: #7D7168;
+    --paper-ghost: #574E47;
+    --amber: #E8A33D;
+    --amber-deep: #9C6A1E;
+    --amber-wash: #2A2015;
+    --sage: #8FB861;
+    --sage-deep: #4A6B2C;
+    --sage-wash: #1B2114;
+    --rust: #D4674B;
+    --rust-wash: #2A1713;
+    --sky: #6BA8C4;
+    --violet: #A98FD1;
+    --display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --body: 'Inter Tight', -apple-system, system-ui, sans-serif;
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 18px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+  html { -webkit-text-size-adjust: 100%; }
+
   body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
+    font-family: var(--body);
+    background: var(--ink);
+    color: var(--paper);
     min-height: 100vh;
     min-height: 100dvh;
     overflow-x: hidden;
     padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    font-size: 16px;
+    line-height: 1.45;
   }
 
-  .app {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px 16px 100px;
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
 
-  /* Header */
-  .header h1 {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: -0.5px;
-  }
-  .header p { font-size: 12px; color: var(--text-faint); margin-top: 4px; }
+  .app { max-width: 540px; margin: 0 auto; padding: 18px 16px 108px; }
 
-  /* Stats */
-  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 20px 0; }
-  .stat {
-    background: var(--surface);
-    border-radius: 10px;
-    padding: 12px 10px;
-    border: 1px solid var(--border);
-  }
-  .stat-label { font-size: 10px; color: var(--text-faint); font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; }
-  .stat-val { font-size: 18px; font-weight: 700; color: #fff; margin-top: 3px; font-family: var(--mono); }
-  .stat-sub { font-size: 10px; color: var(--text-ghost); margin-top: 1px; }
+  button { font-family: var(--body); cursor: pointer; }
 
-  /* Week selector */
-  .weeks { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
-  .week-btn {
-    padding: 8px 14px; border-radius: 8px;
-    border: 1px solid var(--border);
-    background: transparent; color: var(--text-faint);
-    font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font);
-    transition: all 0.15s;
+  /* ---------- Masthead ---------- */
+  .masthead { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
+  .masthead h1 {
+    font-family: var(--display);
+    font-size: 30px; font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1;
+    font-variation-settings: 'wdth' 90;
   }
-  .week-btn.active { border-color: var(--text-ghost); background: var(--border); color: #fff; }
-  .week-wrap { display: flex; align-items: center; gap: 2px; }
-  .week-del {
-    width: 22px; height: 22px; border-radius: 50%;
-    border: 1px solid #2D1515; background: var(--red-bg);
-    color: var(--red-light); font-size: 11px; cursor: pointer;
+  .masthead .week-tag {
+    font-family: var(--display); font-size: 13px; font-weight: 600;
+    color: var(--amber); background: var(--amber-wash);
+    padding: 5px 11px; border-radius: 100px;
+    border: 1px solid var(--amber-deep);
+  }
+
+  /* ---------- Today hero ---------- */
+  .today {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 20px; margin-bottom: 22px;
+    position: relative; overflow: hidden;
+  }
+  .today::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--amber);
+  }
+  .today.is-done::before { background: var(--sage); }
+  .today-eyebrow {
+    font-size: 12px; color: var(--paper-faint); font-weight: 500;
+    margin-bottom: 6px; letter-spacing: 0.01em;
+  }
+  .today-title {
+    font-family: var(--display); font-size: 26px; font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .today-meta { font-size: 13px; color: var(--paper-dim); margin-bottom: 16px; }
+  .today-actions { display: flex; gap: 9px; }
+  .btn {
+    border: none; border-radius: var(--r-md);
+    font-size: 15px; font-weight: 600; min-height: 48px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    transition: transform 0.12s ease, background 0.15s ease;
+  }
+  .btn:active { transform: scale(0.975); }
+  .btn-primary { flex: 1; background: var(--amber); color: #1A1206; }
+  .btn-primary.done { background: var(--sage); color: #14190C; }
+  .btn-ghost {
+    background: transparent; color: var(--paper-dim);
+    border: 1px solid var(--line); padding: 0 16px;
+  }
+  .today-rest { color: var(--paper-dim); font-size: 14px; }
+
+  /* ---------- Section heads ---------- */
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 26px 0 10px;
+  }
+  .section-head h2 {
+    font-family: var(--display); font-size: 17px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .link-btn {
+    background: none; border: none; color: var(--paper-faint);
+    font-size: 13px; font-weight: 500; padding: 8px 4px; min-height: 40px;
+  }
+  .link-btn.on { color: var(--amber); }
+
+  /* ---------- Week strip ---------- */
+  .weekbar { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+  .wb-btn {
+    width: 46px; height: 46px; border-radius: var(--r-md);
+    border: 1px solid var(--line); background: var(--surface);
+    color: var(--paper); font-size: 20px; line-height: 1;
     display: flex; align-items: center; justify-content: center;
-    margin-left: -4px; transition: all 0.15s;
+    transition: background 0.15s;
   }
-  .week-del:active { transform: scale(0.9); }
-
-  /* Drag handle on day rows */
-  .day-row { position: relative; }
-  .drag-handle {
-    color: var(--text-ghost); font-size: 14px;
-    cursor: grab; user-select: none;
-    padding: 4px 6px; touch-action: none;
-  }
-  .drag-handle:active { cursor: grabbing; }
-  .day-row.dragging { opacity: 0.4; }
-  .day-row.drag-over { border-color: var(--indigo); background: #1E1B3A; }
-
-  /* Swap mode */
-  .swap-bar { margin-bottom: 8px; }
-  .swap-btn {
-    width: 100%; padding: 8px 12px; border-radius: 8px;
-    border: 1px dashed var(--border-hover); background: transparent;
-    color: var(--text-faint); font-size: 12px; font-weight: 600;
-    cursor: pointer; font-family: var(--font);
-    transition: all 0.15s;
-  }
-  .swap-btn.active {
-    background: #1E1B3A; border: 1px solid var(--indigo);
-    color: var(--indigo); border-style: solid;
-  }
-  .day-row.swap-selected {
-    border-color: var(--indigo) !important;
-    background: #1E1B3A !important;
-  }
-  .swap-icon {
-    width: 30px; height: 30px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: var(--text-faint);
-  }
-  .week-add {
-    width: 40px; height: 44px; border-radius: 10px;
-    border: 1px dashed var(--border-hover); background: transparent;
-    color: var(--text-faint); font-size: 20px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  /* Week nav stepper */
-  .week-nav { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; }
-  .week-arrow {
-    width: 40px; height: 44px; border-radius: 10px;
-    border: 1px solid var(--border); background: var(--surface);
-    color: var(--text); font-size: 22px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s; font-family: var(--font);
-  }
-  .week-arrow:active:not(:disabled) { background: var(--border); transform: scale(0.95); }
-  .week-arrow:disabled { opacity: 0.25; cursor: default; }
-  .week-current {
-    flex: 1; height: 44px; border-radius: 10px;
-    background: var(--border); border: 1px solid var(--border-hover);
+  .wb-btn:disabled { opacity: 0.28; }
+  .wb-btn:active:not(:disabled) { background: var(--surface-2); }
+  .wb-center {
+    flex: 1; height: 46px; border-radius: var(--r-md);
+    background: var(--surface-2); border: 1px solid var(--line);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
-  .week-current-label { font-size: 15px; font-weight: 700; color: #fff; }
-  .week-current-sub { font-size: 10px; color: var(--text-faint); font-family: var(--mono); }
-  .week-del-nav {
-    width: 40px; height: 44px; border-radius: 10px;
-    border: 1px solid #2D1515; background: var(--red-bg);
-    color: var(--red-light); font-size: 14px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
+  .wb-center b { font-family: var(--display); font-size: 16px; font-weight: 600; }
+  .wb-center span { font-size: 11px; color: var(--paper-faint); }
+  .wb-add { border-style: dashed; color: var(--paper-faint); }
+  .wb-del { border-color: #472A22; background: var(--rust-wash); color: var(--rust); font-size: 15px; }
+
+  /* ---------- Stats ---------- */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 4px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: var(--r-md); padding: 13px 12px;
   }
-  .week-del-nav:active { transform: scale(0.95); }
-  .tabs { display: flex; gap: 3px; margin-bottom: 18px; background: var(--surface); border-radius: 9px; padding: 3px; }
+  .stat-k { font-size: 12px; color: var(--paper-faint); margin-bottom: 3px; }
+  .stat-v {
+    font-family: var(--display); font-size: 21px; font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-n { font-size: 11px; color: var(--paper-ghost); margin-top: 2px; }
+  .stat-n.hit { color: var(--sage); }
+
+  /* ---------- Day list ---------- */
+  .days { display: flex; flex-direction: column; gap: 7px; }
+  .day {
+    display: grid; grid-template-columns: 46px 1fr auto 48px;
+    align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: var(--r-md); padding: 10px 12px;
+    min-height: 62px; transition: border-color 0.15s, background 0.15s;
+  }
+  .day.open { border-radius: var(--r-md) var(--r-md) 0 0; border-color: var(--line); border-bottom-color: transparent; }
+  .day.done { background: var(--sage-wash); border-color: var(--sage-deep); }
+  .day.today-row { border-color: var(--amber-deep); }
+  .day.picked { border-color: var(--amber); background: var(--amber-wash); }
+  .day-when {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1px;
+  }
+  .day-abbr { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--paper-dim); }
+  .day-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--amber); }
+  .day-name {
+    font-size: 15px; font-weight: 600; line-height: 1.2;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .day.done .day-name { color: var(--sage); }
+  .day-sub { font-size: 12px; color: var(--paper-ghost); margin-top: 2px; }
+  .day-steps { font-size: 12px; color: var(--paper-faint); font-variant-numeric: tabular-nums; }
+  .day-empty { font-size: 14px; color: var(--paper-ghost); }
+  .check {
+    width: 44px; height: 44px; border-radius: var(--r-sm);
+    border: 2px solid var(--line); background: transparent;
+    color: var(--paper); font-size: 19px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .check.on { border: none; background: var(--sage); color: #14190C; }
+  .check:active { transform: scale(0.9); }
+  @keyframes pop { 0%{transform:scale(1)} 45%{transform:scale(1.22)} 100%{transform:scale(1)} }
+  .check.pop { animation: pop 0.32s ease; }
+  .swap-mark {
+    width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+    font-size: 17px; color: var(--paper-faint);
+  }
+
+  /* ---------- Drawer ---------- */
+  .drawer {
+    background: var(--ink); border: 1px solid var(--line); border-top: none;
+    border-radius: 0 0 var(--r-md) var(--r-md); padding: 15px 14px 16px;
+    margin-top: -7px; margin-bottom: 7px;
+  }
+  .ex {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--line-soft); font-size: 14.5px;
+  }
+  .ex:last-of-type { border-bottom: none; }
+  .ex-name { color: var(--paper-dim); }
+  .ex-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .ex-reps { color: var(--paper-faint); font-variant-numeric: tabular-nums; font-size: 13.5px; }
+  .ex-timer {
+    border: 1px solid var(--line); background: var(--surface);
+    color: var(--amber); border-radius: var(--r-sm);
+    width: 40px; height: 36px; font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin: 15px 0 11px; }
+  .flabel { font-size: 12px; color: var(--paper-faint); margin-bottom: 5px; }
+  .inp {
+    width: 100%; min-height: 46px; padding: 10px 12px; border-radius: var(--r-sm);
+    border: 1px solid var(--line); background: var(--surface);
+    color: var(--paper); font-size: 16px; font-family: var(--body);
+    outline: none; font-variant-numeric: tabular-nums;
+  }
+  .inp:focus { border-color: var(--amber-deep); }
+  .moods { display: flex; gap: 5px; }
+  .mood {
+    flex: 1; min-height: 46px; border-radius: var(--r-sm);
+    border: 1px solid var(--line); background: var(--surface);
+    font-size: 19px; transition: transform 0.12s, border-color 0.15s;
+  }
+  .mood.on { border-color: var(--amber); background: var(--amber-wash); transform: scale(1.04); }
+  .drawer-actions { display: flex; gap: 8px; margin-top: 13px; }
+  .da {
+    min-height: 44px; border-radius: var(--r-sm); font-size: 14px; font-weight: 500;
+    border: 1px solid var(--line); background: var(--surface); color: var(--paper-dim);
+    flex: 1;
+  }
+  .da.danger { flex: 0 0 auto; padding: 0 18px; border-color: #472A22; background: var(--rust-wash); color: var(--rust); }
+
+  /* ---------- Picker ---------- */
+  .picker { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pick {
+    border: 1px solid var(--line); background: var(--surface);
+    border-radius: var(--r-sm); padding: 12px 11px; text-align: left;
+    min-height: 62px; transition: border-color 0.15s, background 0.15s;
+  }
+  .pick:active { background: var(--surface-2); }
+  .pick b { display: block; font-size: 14px; font-weight: 600; color: var(--paper); margin-bottom: 2px; }
+  .pick span { font-size: 12px; color: var(--paper-ghost); }
+  .pick-rest {
+    grid-column: 1 / -1; border-style: dashed; text-align: center;
+    color: var(--paper-faint); font-size: 14px; min-height: 48px;
+  }
+
+  /* ---------- Blocks page ---------- */
+  .bcard {
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: var(--r-md); padding: 16px; margin-bottom: 9px;
+  }
+  .bcard h3 {
+    font-family: var(--display); font-size: 17px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px; letter-spacing: -0.01em;
+  }
+  .bcard .bmeta { font-size: 12px; color: var(--paper-ghost); margin-top: 1px; }
+  .bcard .bdesc { font-size: 13.5px; color: var(--paper-faint); margin: 9px 0 11px; }
+
+  /* ---------- Progress ---------- */
+  .prow {
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: var(--r-md); padding: 14px 15px; margin-bottom: 8px;
+  }
+  .prow-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 11px; }
+  .prow-week { font-family: var(--display); font-size: 15px; font-weight: 600; }
+  .prow-score { font-size: 13px; color: var(--paper-faint); font-variant-numeric: tabular-nums; }
+  .prow-score.full { color: var(--sage); }
+  .bar-wrap { margin-bottom: 8px; }
+  .bar-wrap:last-child { margin-bottom: 0; }
+  .bar-top { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--paper-faint); margin-bottom: 4px; }
+  .bar-top b { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bar { height: 7px; background: var(--line-soft); border-radius: 4px; overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 4px; }
+  .totals {
+    background: var(--amber-wash); border: 1px solid var(--amber-deep);
+    border-radius: var(--r-md); padding: 17px; margin-top: 16px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .totals b { font-family: var(--display); font-size: 25px; font-weight: 700; display: block; font-variant-numeric: tabular-nums; }
+  .totals span { font-size: 12px; color: var(--paper-faint); }
+
+  /* ---------- Measures ---------- */
+  .mcard {
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: var(--r-md); padding: 18px; margin-bottom: 12px;
+  }
+  .mcard h3 { font-family: var(--display); font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .mcard p.hint { font-size: 13px; color: var(--paper-faint); margin-bottom: 15px; }
+  .mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; }
+  .mbig { font-family: var(--display); font-size: 27px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .mbig i { font-size: 13px; font-style: normal; color: var(--paper-ghost); font-family: var(--body); }
+  .delta { margin-top: 15px; padding: 11px 14px; border-radius: var(--r-sm); font-size: 14px; font-weight: 600; }
+  .delta.down { background: var(--sage-wash); border: 1px solid var(--sage-deep); color: var(--sage); }
+  .delta.up { background: var(--rust-wash); border: 1px solid #472A22; color: var(--rust); }
+  .delta em { font-style: normal; font-weight: 400; color: var(--paper-faint); margin-left: 7px; font-size: 12.5px; }
+
+  /* ---------- Export ---------- */
+  .pre-wrap {
+    background: var(--ink); border: 1px solid var(--line);
+    border-radius: var(--r-sm); padding: 14px; max-height: 320px; overflow-y: auto;
+  }
+  .pre-wrap pre {
+    font-family: ui-monospace, SFMono-Regular, monospace; font-size: 11.5px;
+    color: var(--paper-faint); white-space: pre-wrap; word-break: break-word; line-height: 1.65;
+  }
+  .steps-list { font-size: 13.5px; color: var(--paper-dim); line-height: 1.9; }
+
+  /* ---------- Timer overlay ---------- */
+  .tmr {
+    position: fixed; inset: 0; background: rgba(20,17,15,0.97);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 200; gap: 26px; padding: 24px;
+  }
+  .tmr-label { font-size: 15px; color: var(--paper-dim); text-align: center; }
+  .tmr-count {
+    font-family: var(--display); font-size: 84px; font-weight: 800;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.04em; line-height: 1;
+  }
+  .tmr-count.low { color: var(--amber); }
+  .tmr-ring { width: 200px; height: 200px; position: relative; display: flex; align-items: center; justify-content: center; }
+  .tmr-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .tmr-btns { display: flex; gap: 10px; }
+  .tmr-btn {
+    min-height: 50px; padding: 0 26px; border-radius: var(--r-md);
+    border: 1px solid var(--line); background: var(--surface);
+    color: var(--paper); font-size: 15px; font-weight: 600;
+  }
+  .tmr-btn.primary { background: var(--amber); color: #1A1206; border: none; }
+
+  /* ---------- Tabbar ---------- */
+  .tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 100;
+    background: rgba(20,17,15,0.94); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    padding: 7px 0 calc(7px + env(safe-area-inset-bottom));
+  }
+  .tabbar-in { display: flex; max-width: 540px; margin: 0 auto; padding: 0 10px; gap: 3px; }
   .tab {
-    flex: 1; padding: 9px 0; border-radius: 7px; border: none;
-    background: transparent; color: var(--text-faint);
-    font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font);
-    transition: all 0.15s;
+    flex: 1; min-height: 52px; border: none; background: transparent;
+    color: var(--paper-ghost); font-size: 11px; font-weight: 500;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    border-radius: var(--r-sm); transition: color 0.15s;
   }
-  .tab.active { background: var(--border-hover); color: #fff; }
+  .tab.on { color: var(--amber); }
+  .tab i { font-size: 19px; font-style: normal; line-height: 1; }
 
-  /* Day rows */
-  .day-row {
-    display: grid;
-    grid-template-columns: 42px 1fr auto 36px;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 12px;
-    background: var(--surface);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-bottom: 5px;
-  }
-  .day-row.open { border-radius: 10px 10px 0 0; border-color: var(--border-hover); border-bottom: none; }
-  .day-row.done { background: var(--green-bg); border-color: var(--green-border); }
-  .day-label { font-size: 12px; font-weight: 700; color: var(--text-ghost); text-align: center; font-family: var(--mono); }
-  .day-workout { font-size: 14px; font-weight: 600; color: #D4D4D8; display: flex; align-items: center; gap: 6px; }
-  .day-workout.done-text { color: var(--green-dim); }
-  .day-meta { font-size: 11px; color: var(--text-ghost); margin-top: 1px; }
-  .day-steps { font-size: 11px; color: var(--text-ghost); font-family: var(--mono); }
-  .day-empty { font-size: 13px; color: var(--border-hover); font-style: italic; }
-
-  .check-btn {
-    width: 30px; height: 30px; border-radius: 7px;
-    border: 2px solid var(--border-hover);
-    background: transparent; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: #fff; transition: all 0.2s;
-  }
-  .check-btn.checked { border: none; background: var(--green); }
-
-  /* Panels */
-  .panel {
-    background: #0E0E10;
-    border-radius: 0 0 10px 10px;
-    border: 1px solid var(--border-hover);
-    border-top: none;
-    padding: 14px;
-    margin-bottom: 5px;
-  }
-  .panel-label { font-size: 10px; color: var(--text-faint); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-
-  /* Picker grid */
-  .picker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .picker-btn {
-    padding: 10px 8px; border-radius: 8px;
-    border: 1px solid #1E1E22; background: #0C0C0E;
-    cursor: pointer; text-align: left; transition: all 0.15s;
-    font-family: var(--font);
-  }
-  .picker-btn:active { background: #161618; }
-  .picker-btn .icon { font-size: 14px; }
-  .picker-btn .name { font-size: 12px; font-weight: 600; color: #D4D4D8; }
-  .picker-btn .dur { font-size: 10px; color: var(--text-ghost); }
-  .picker-rest {
-    padding: 10px 8px; border-radius: 8px;
-    border: 1px dashed var(--border-hover); background: transparent;
-    cursor: pointer; grid-column: 1 / -1; text-align: center;
-    font-size: 12px; color: var(--text-ghost); font-family: var(--font);
-  }
-
-  /* Exercise list */
-  .ex-row {
-    font-size: 13px; color: var(--text-dim); padding: 4px 0;
-    display: flex; justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-  }
-  .ex-row:last-child { border-bottom: none; }
-  .ex-reps { color: var(--text-faint); font-family: var(--mono); font-size: 12px; }
-
-  /* Inputs */
-  .input {
-    width: 100%; padding: 8px 10px; border-radius: 7px;
-    border: 1px solid var(--border-hover); background: var(--bg);
-    color: #fff; font-size: 14px; font-family: var(--mono);
-    outline: none;
-  }
-  .input-text {
-    width: 100%; padding: 8px 10px; border-radius: 7px;
-    border: 1px solid var(--border-hover); background: var(--bg);
-    color: var(--text-dim); font-size: 12px; font-family: var(--font);
-    outline: none;
-  }
-  .input-big {
-    width: 100%; padding: 10px 12px; border-radius: 8px;
-    border: 1px solid var(--border-hover); background: var(--bg);
-    color: #fff; font-size: 20px; font-family: var(--mono);
-    outline: none;
-  }
-  .field-label { font-size: 10px; color: var(--text-faint); font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-
-  /* Feelings */
-  .feeling-grid { display: flex; gap: 4px; }
-  .feeling-btn {
-    flex: 1; padding: 6px 0; border-radius: 7px;
-    border: 1px solid var(--border); background: var(--bg);
-    font-size: 15px; cursor: pointer; transition: all 0.15s;
-  }
-  .feeling-btn.selected { border-color: var(--indigo); background: #1E1B3A; transform: scale(1.05); }
-
-  /* Action buttons */
-  .btn-row { display: flex; gap: 8px; margin-top: 12px; }
-  .btn-change {
-    flex: 1; padding: 8px; border-radius: 7px;
-    border: 1px solid var(--border-hover); background: var(--surface);
-    color: var(--text-muted); font-size: 12px; font-weight: 600;
-    cursor: pointer; font-family: var(--font);
-  }
-  .btn-remove {
-    padding: 8px 14px; border-radius: 7px;
-    border: 1px solid #2D1515; background: var(--red-bg);
-    color: var(--red-light); font-size: 12px; font-weight: 600;
-    cursor: pointer; font-family: var(--font);
-  }
-  .btn-reset {
-    padding: 10px 16px; border-radius: 7px;
-    border: 1px solid #2D1515; background: var(--red-bg);
-    color: var(--red-light); font-size: 12px; font-weight: 600;
-    cursor: pointer; font-family: var(--font);
-  }
-  .btn-export {
-    width: 100%; padding: 14px; border-radius: 8px; border: none;
-    background: linear-gradient(135deg, var(--indigo), #6366F1);
-    color: #fff; font-size: 14px; font-weight: 700;
-    cursor: pointer; font-family: var(--font);
-    transition: all 0.3s; margin-bottom: 14px;
-  }
-  .btn-export.copied { background: var(--green); }
-
-  /* Block cards */
-  .block-card {
-    background: var(--surface); border-radius: 10px;
-    padding: 14px 16px; border: 1px solid var(--border);
-    margin-bottom: 8px;
-  }
-  .block-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .block-icon { font-size: 18px; }
-  .block-name { font-size: 14px; font-weight: 700; color: #fff; }
-  .block-dur { font-size: 11px; color: var(--text-ghost); }
-  .block-desc { font-size: 12px; color: var(--text-faint); margin-bottom: 8px; }
-  .block-ex { font-size: 12px; color: var(--text-muted); padding: 3px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); }
-  .block-ex:last-child { border-bottom: none; }
-
-  /* Weight */
-  .weight-card {
-    background: var(--surface); border-radius: 10px;
-    padding: 20px; border: 1px solid var(--border);
-    margin-bottom: 14px;
-  }
-  .weight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end; }
-  .weight-start { font-size: 28px; font-weight: 700; color: #fff; font-family: var(--mono); }
-  .weight-unit { font-size: 13px; color: var(--text-ghost); }
-  .weight-diff {
-    margin-top: 16px; padding: 10px 14px; border-radius: 8px;
-    font-size: 14px; font-weight: 600;
-  }
-  .weight-diff.loss { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green-dim); }
-  .weight-diff.gain { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red-light); }
-  .weight-diff .note { font-size: 11px; font-weight: 400; color: var(--text-ghost); margin-left: 8px; }
-
-  /* Export */
-  .export-preview {
-    background: var(--bg); border-radius: 8px; padding: 14px;
-    border: 1px solid var(--border);
-    max-height: 300px; overflow-y: auto;
-  }
-  .export-preview pre {
-    font-size: 11px; color: var(--text-muted); margin: 0;
-    font-family: var(--mono); white-space: pre-wrap; word-break: break-word;
-    line-height: 1.6;
-  }
-  .howto {
-    background: #0F1A2E; border-radius: 10px; padding: 14px 16px;
-    border: 1px solid #1E2545; margin-top: 14px;
-  }
-  .howto-title { font-size: 12px; color: var(--indigo); font-weight: 600; margin-bottom: 4px; }
-  .howto-text { font-size: 11px; color: var(--text-ghost); line-height: 1.6; white-space: pre-line; }
-
-  /* Footer */
-  .footer {
-    margin-top: 28px; padding: 12px 14px; border-radius: 10px;
-    background: linear-gradient(135deg, #111127, #0F1A2E);
-    border: 1px solid #1E2545; text-align: center;
-  }
-  .footer-main { font-size: 12px; color: var(--indigo); font-weight: 600; }
-  .footer-sub { font-size: 10px; color: var(--text-ghost); margin-top: 3px; }
-
-  /* Bottom nav */
-  .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: #0D0D0F;
-    border-top: 1px solid var(--border);
-    display: flex; justify-content: center;
-    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
-    z-index: 100;
-  }
-  .bottom-nav-inner { display: flex; gap: 4px; max-width: 500px; width: 100%; padding: 0 12px; }
-  .nav-btn {
-    flex: 1; padding: 8px 0; border-radius: 8px; border: none;
-    background: transparent; color: var(--text-faint);
-    font-size: 11px; font-weight: 600; cursor: pointer; font-family: var(--font);
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    transition: all 0.15s;
-  }
-  .nav-btn.active { color: var(--indigo); }
-  .nav-icon { font-size: 18px; }
-
-  /* Animations */
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-  .panel { animation: fadeIn 0.15s ease-out; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 2px; }
+  .empty { text-align: center; padding: 44px 20px; color: var(--paper-faint); font-size: 14.5px; }
 </style>
 </head>
 <body>
 
 <div class="app" id="app"></div>
-<div class="bottom-nav">
-  <div class="bottom-nav-inner" id="nav"></div>
-</div>
+<nav class="tabbar"><div class="tabbar-in" id="nav"></div></nav>
+<div id="overlay"></div>
 
 <script>
 const STORAGE_KEY = 'fitness-flex-v4';
 
 const BLOCKS = [
-  { id:'fullbody', label:'Full Body', icon:'🔴', color:'#EF4444', duration:'25 min', desc:'Sentadilla goblet puede subir a 7.5kg si 5 es fácil', exercises:[{name:'Flexiones (puños)',reps:'20'},{name:'Sentadilla goblet (5–7.5kg)',reps:'15'},{name:'Plancha',reps:'50s'},{name:'Puente glúteo (peso en cadera)',reps:'20'},{name:'Abdominales (2x15)',reps:'2x15'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'3 rondas' },
-  { id:'variacion', label:'Variación', icon:'🟠', color:'#F97316', duration:'25 min', desc:'Remo en silla: inclinado desde la cadera, brazos colgando', exercises:[{name:'Flexiones lentas (3s bajada)',reps:'15'},{name:'Remo en silla ambos brazos (5kg c/u)',reps:'12'},{name:'Curl bíceps + press hombro (2-5kg)',reps:'12'},{name:'Plancha lateral/lado',reps:'40s'},{name:'Abdominales',reps:'20'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'3 rondas' },
-  { id:'reentrada-a', label:'Reentrada A', icon:'🌱', color:'#10B981', duration:'15 min', desc:'Versión suave de Full Body. Post-viaje o post-enfermedad.', exercises:[{name:'Flexiones (puños)',reps:'12'},{name:'Sentadilla goblet (5kg)',reps:'12'},{name:'Plancha',reps:'30s'},{name:'Puente glúteo',reps:'15'},{name:'Abdominales',reps:'15'},{name:'Descanso entre rondas',reps:'75s'}], rounds:'2 rondas' },
-  { id:'reentrada-b', label:'Reentrada B', icon:'🌱', color:'#10B981', duration:'15 min', desc:'Versión suave de Variación. Peso liviano, sin buscar fallo.', exercises:[{name:'Flexiones lentas (3s bajada)',reps:'10'},{name:'Remo en silla (5kg c/u)',reps:'10'},{name:'Curl bíceps + press hombro (2kg)',reps:'10'},{name:'Plancha lateral/lado',reps:'25s'},{name:'Abdominales',reps:'15'},{name:'Descanso entre rondas',reps:'75s'}], rounds:'2 rondas' },
-  { id:'fuerza', label:'Día Fuerte', icon:'🟢', color:'#22C55E', duration:'30 min', desc:'Menos volumen de pierna para que descansen. Peso muerto puede ir a 7.5kg', exercises:[{name:'Flexiones diamante',reps:'14'},{name:'Peso muerto mancuernas (5–7.5kg c/u)',reps:'12'},{name:'Puente glúteo elevado',reps:'18'},{name:'Plancha (2x30s c/15s pausa)',reps:'2x30s'},{name:'Abdominales',reps:'20'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'3 rondas' },
-  { id:'futbol', label:'Fútbol 7', icon:'⚽', color:'#EAB308', duration:'40–60 min', desc:'Liga — cuenta como HIIT/cardio', exercises:[{name:'Partido completo',reps:'—'}], rounds:'Cardio semanal' },
-  { id:'trote', label:'Trote', icon:'🏃‍♂️', color:'#06B6D4', duration:'25–35 min', desc:'Reemplazo de cardio si no hay fútbol. Ritmo conversacional.', exercises:[{name:'Calentamiento caminando',reps:'5 min'},{name:'Trote continuo',reps:'20–25 min'},{name:'Enfriamiento caminando',reps:'5 min'},{name:'Tip: si cuesta, alterna 2min trote/1min camina',reps:''}], rounds:'Cardio' },
-  { id:'hiit', label:'HIIT', icon:'🟡', color:'#EAB308', duration:'25 min', desc:'4 rondas con 45s descanso. Reemplazo de fútbol.', exercises:[{name:'Jumping jacks',reps:'30s'},{name:'Burpees',reps:'30s'},{name:'Mountain climbers',reps:'30s'},{name:'Descanso',reps:'45s'},{name:'Abdominales',reps:'20'},{name:'Plancha',reps:'30s'}], rounds:'4 rondas' },
-  { id:'caminar', label:'Caminar', icon:'🚶', color:'#3B82F6', duration:'35–40 min', desc:'Meta: 6,000+ pasos al día', exercises:[{name:'Caminata activa',reps:'35–40 min'},{name:'Tip: post-almuerzo',reps:'15 min'},{name:'Tip: días de entreno caminar 3k extra',reps:''}], rounds:'' },
-  { id:'libre', label:'Mov. Libre', icon:'🏃', color:'#8B5CF6', duration:'—', desc:'Deporte, bici, lo que sea', exercises:[{name:'Actividad a elección',reps:'—'}], rounds:'' },
+  { id:'fullbody', label:'Full Body', icon:'🔴', color:'#D4674B', duration:'25 min', desc:'Sentadilla goblet puede subir a 7.5kg si 5 es fácil', exercises:[{name:'Flexiones (puños)',reps:'20'},{name:'Sentadilla goblet (5–7.5kg)',reps:'15'},{name:'Plancha',reps:'50s'},{name:'Puente glúteo (peso en cadera)',reps:'20'},{name:'Abdominales (2x15)',reps:'2x15'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'3 rondas' },
+  { id:'variacion', label:'Variación', icon:'🟠', color:'#E8A33D', duration:'25 min', desc:'Remo en silla: inclinado desde la cadera, brazos colgando', exercises:[{name:'Flexiones lentas (3s bajada)',reps:'15'},{name:'Remo en silla ambos brazos (5kg c/u)',reps:'12'},{name:'Curl bíceps + press hombro (2-5kg)',reps:'12'},{name:'Plancha lateral/lado',reps:'40s'},{name:'Abdominales',reps:'20'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'3 rondas' },
+  { id:'reentrada-a', label:'Reentrada A', icon:'🌱', color:'#8FB861', duration:'15 min', desc:'Versión suave de Full Body. Post-viaje o post-enfermedad.', exercises:[{name:'Flexiones (puños)',reps:'12'},{name:'Sentadilla goblet (5kg)',reps:'12'},{name:'Plancha',reps:'30s'},{name:'Puente glúteo',reps:'15'},{name:'Abdominales',reps:'15'},{name:'Descanso entre rondas',reps:'75s'}], rounds:'2 rondas' },
+  { id:'reentrada-b', label:'Reentrada B', icon:'🌱', color:'#8FB861', duration:'15 min', desc:'Versión suave de Variación. Peso liviano, sin buscar fallo.', exercises:[{name:'Flexiones lentas (3s bajada)',reps:'10'},{name:'Remo en silla (5kg c/u)',reps:'10'},{name:'Curl bíceps + press hombro (2kg)',reps:'10'},{name:'Plancha lateral/lado',reps:'25s'},{name:'Abdominales',reps:'15'},{name:'Descanso entre rondas',reps:'75s'}], rounds:'2 rondas' },
+  { id:'fuerza', label:'Día Fuerte', icon:'🟢', color:'#8FB861', duration:'30 min', desc:'Menos volumen de pierna para que descansen. Peso muerto puede ir a 7.5kg', exercises:[{name:'Flexiones diamante',reps:'14'},{name:'Peso muerto mancuernas (5–7.5kg c/u)',reps:'12'},{name:'Puente glúteo elevado',reps:'18'},{name:'Plancha (2x30s c/15s pausa)',reps:'2x30s'},{name:'Abdominales',reps:'20'},{name:'Descanso entre rondas',reps:'60s'}], rounds:'3 rondas' },
+  { id:'futbol', label:'Fútbol 7', icon:'⚽', color:'#E8A33D', duration:'40–60 min', desc:'Liga — cuenta como HIIT/cardio', exercises:[{name:'Partido completo',reps:'—'}], rounds:'Cardio semanal' },
+  { id:'trote', label:'Trote', icon:'🏃‍♂️', color:'#6BA8C4', duration:'25–35 min', desc:'Reemplazo de cardio si no hay fútbol. Ritmo conversacional.', exercises:[{name:'Calentamiento caminando',reps:'5 min'},{name:'Trote continuo',reps:'20–25 min'},{name:'Enfriamiento caminando',reps:'5 min'},{name:'Si cuesta: alterna 2min trote / 1min camina',reps:''}], rounds:'Cardio' },
+  { id:'hiit', label:'HIIT', icon:'🟡', color:'#E8A33D', duration:'25 min', desc:'4 rondas con 45s descanso. Reemplazo de fútbol.', exercises:[{name:'Jumping jacks',reps:'30s'},{name:'Burpees',reps:'30s'},{name:'Mountain climbers',reps:'30s'},{name:'Descanso',reps:'45s'},{name:'Abdominales',reps:'20'},{name:'Plancha',reps:'30s'}], rounds:'4 rondas' },
+  { id:'caminar', label:'Caminar', icon:'🚶', color:'#6BA8C4', duration:'35–40 min', desc:'Meta: 7,000+ pasos al día', exercises:[{name:'Caminata activa',reps:'35–40 min'},{name:'Post-almuerzo',reps:'15 min'},{name:'Días de entreno: 3k extra',reps:''}], rounds:'' },
+  { id:'libre', label:'Mov. Libre', icon:'🏃', color:'#A98FD1', duration:'—', desc:'Deporte, bici, lo que sea', exercises:[{name:'Actividad a elección',reps:'—'}], rounds:'' },
 ];
 
 const DAYS = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-const FEELINGS = ['😵','😐','💪','🔥'];
+const DAYS_LONG = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+const MOODS = ['😵','😐','💪','🔥'];
+const STEP_GOAL = 7000;
 
-function defaultDay(workout) { return { workout: workout||null, completed:false, steps:'', feeling:'', notes:'' }; }
-function defaultWeek() {
-  return { days: {
-    1: defaultDay('fullbody'), 2: defaultDay('variacion'), 3: defaultDay('futbol'),
-    4: defaultDay('fuerza'), 5: defaultDay('caminar'), 6: defaultDay('libre'), 7: defaultDay(null)
-  }};
+function defaultDay(w){ return { workout:w||null, completed:false, steps:'', feeling:'', notes:'' }; }
+function defaultWeek(){
+  return { days:{ 1:defaultDay('fullbody'), 2:defaultDay('variacion'), 3:defaultDay('futbol'),
+    4:defaultDay('fuerza'), 5:defaultDay('caminar'), 6:defaultDay('libre'), 7:defaultDay(null) } };
 }
-function defaultState() { return { weeks:{1:defaultWeek(),2:defaultWeek()}, weight:{start:76.3,current:''}, waist:{start:'',current:''} }; }
+function defaultState(){ return { weeks:{1:defaultWeek(),2:defaultWeek()}, weight:{start:76.3,current:''}, waist:{start:'',current:''} }; }
+function getBlock(id){ return BLOCKS.find(b=>b.id===id); }
 
-function getBlock(id) { return BLOCKS.find(b => b.id === id); }
-
-// State
 let data = defaultState();
 let currentWeek = 1;
-let activeDay = null;
-let picking = null;
-let view = 'tracker';
-let copied = false;
-let swapMode = false;
-let swapFirst = null;
+let openDay = null, pickDay = null, view = 'today';
+let swapMode = false, swapFirst = null, copied = false, popDay = null;
+let timer = null;
 
-// Load
-function load() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) data = JSON.parse(raw);
-  } catch(e) { console.error('Load error', e); }
-  // Migration: ensure waist field exists for older saved data
+function load(){
+  try { const raw = localStorage.getItem(STORAGE_KEY); if (raw) data = JSON.parse(raw); }
+  catch(e){ console.error('Load error', e); }
   if (!data.waist) data.waist = { start:'', current:'' };
-  // Start on the latest week so you don't have to switch every time
-  const weekNums = Object.keys(data.weeks).map(Number);
-  if (weekNums.length) currentWeek = Math.max(...weekNums);
+  const ws = Object.keys(data.weeks).map(Number);
+  if (ws.length) currentWeek = Math.max(...ws);
 }
-
-function save() {
+function save(){
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-  catch(e) { console.error('Save error', e); }
+  catch(e){ console.error('Save error', e); }
 }
+function buzz(ms){ try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){} }
 
-// Helpers
-function weekStats(wk) {
+function todayIdx(){ const d = new Date().getDay(); return d === 0 ? 7 : d; }
+function isLatestWeek(){ return currentWeek === Math.max(...Object.keys(data.weeks).map(Number)); }
+
+function weekStats(wk){
   const w = data.weeks[wk];
-  const completed = Object.values(w.days).filter(d => d.completed).length;
-  const assigned = Object.values(w.days).filter(d => d.workout).length;
-  // Count steps over all days that have ANY activity (completed workout, steps, feeling, or notes)
-  // Days with no activity yet (e.g. future days) don't count. Days "lived" without registered steps count as 0.
-  const activeDays = Object.values(w.days).filter(d => d.completed || d.steps || d.feeling || d.notes);
-  const totalSteps = activeDays.reduce((sum, d) => sum + (Number(d.steps) || 0), 0);
-  const avgSteps = activeDays.length ? Math.round(totalSteps / activeDays.length) : 0;
-  return { completed, assigned, avgSteps, activeDays: activeDays.length };
+  const completed = Object.values(w.days).filter(d=>d.completed).length;
+  const assigned = Object.values(w.days).filter(d=>d.workout).length;
+  const active = Object.values(w.days).filter(d=>d.completed||d.steps||d.feeling||d.notes);
+  const total = active.reduce((s,d)=>s+(Number(d.steps)||0),0);
+  const avgSteps = active.length ? Math.round(total/active.length) : 0;
+  return { completed, assigned, avgSteps };
+}
+function weightDiff(){ return data.weight.current ? (Number(data.weight.current)-data.weight.start).toFixed(1) : null; }
+function waistDiff(){ return (data.waist.start && data.waist.current) ? (Number(data.waist.current)-Number(data.waist.start)).toFixed(1) : null; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function parseSeconds(reps){
+  if (!reps) return null;
+  const m = String(reps).match(/(\d+)\s*s/);
+  if (m) return parseInt(m[1],10);
+  const mm = String(reps).match(/(\d+)\s*min/);
+  if (mm) return parseInt(mm[1],10)*60;
+  return null;
 }
 
-function weightDiff() {
-  if (!data.weight.current) return null;
-  return (Number(data.weight.current) - data.weight.start).toFixed(1);
-}
-
-function generateSummary() {
-  const lines = ['=== RESUMEN PLAN FLEXIBLE ==='];
-  lines.push(`Peso inicio: ${data.weight.start} kg`);
-  lines.push(`Peso actual: ${data.weight.current || 'no registrado'}`);
-  const wd = weightDiff();
-  if (wd) lines.push(`Cambio: ${Number(wd)>0?'+':''}${wd} kg`);
-  if (data.waist && (data.waist.start || data.waist.current)) {
-    lines.push(`Cintura inicio: ${data.waist.start || '—'} cm | actual: ${data.waist.current || '—'} cm`);
-  }
-  lines.push('');
-  Object.keys(data.weeks).sort((a,b)=>Number(a)-Number(b)).forEach(wk => {
-    const w = data.weeks[wk];
-    const s = weekStats(wk);
-    lines.push(`--- SEMANA ${wk} ---`);
-    lines.push(`Completados: ${s.completed}/${s.assigned}`);
-    if (s.avgSteps > 0) lines.push(`Pasos promedio: ${s.avgSteps.toLocaleString()}`);
-    for (let day = 1; day <= 7; day++) {
-      const d = w.days[day];
-      if (!d.workout && !d.steps && !d.notes) continue;
-      const block = d.workout ? getBlock(d.workout) : null;
-      let line = `  ${DAYS[day-1]}: `;
-      line += block ? `${block.label} ${d.completed?'✓':'✗'}` : 'Descanso';
-      if (d.steps) line += ` | ${Number(d.steps).toLocaleString()} pasos`;
-      if (d.feeling) line += ` | ${d.feeling}`;
-      if (d.notes) line += ` | "${d.notes}"`;
-      lines.push(line);
+function generateSummary(){
+  const L = ['=== RESUMEN PLAN FLEXIBLE ==='];
+  L.push(`Peso inicio: ${data.weight.start} kg`);
+  L.push(`Peso actual: ${data.weight.current || 'no registrado'}`);
+  const wd = weightDiff(); if (wd) L.push(`Cambio: ${Number(wd)>0?'+':''}${wd} kg`);
+  if (data.waist.start || data.waist.current) L.push(`Cintura inicio: ${data.waist.start||'—'} cm | actual: ${data.waist.current||'—'} cm`);
+  L.push('');
+  Object.keys(data.weeks).sort((a,b)=>a-b).forEach(wk=>{
+    const w = data.weeks[wk], s = weekStats(wk);
+    L.push(`--- SEMANA ${wk} ---`);
+    L.push(`Completados: ${s.completed}/${s.assigned}`);
+    if (s.avgSteps>0) L.push(`Pasos promedio: ${s.avgSteps.toLocaleString()}`);
+    for (let d=1; d<=7; d++){
+      const x = w.days[d];
+      if (!x.workout && !x.steps && !x.notes) continue;
+      const b = x.workout ? getBlock(x.workout) : null;
+      let line = `  ${DAYS[d-1]}: ` + (b ? `${b.label} ${x.completed?'✓':'✗'}` : 'Descanso');
+      if (x.steps) line += ` | ${Number(x.steps).toLocaleString()} pasos`;
+      if (x.feeling) line += ` | ${x.feeling}`;
+      if (x.notes) line += ` | "${x.notes}"`;
+      L.push(line);
     }
-    lines.push('');
+    L.push('');
   });
-  lines.push('=== FIN RESUMEN ===');
-  lines.push('(Pega esto en el chat de Claude para que arme las próximas semanas)');
-  return lines.join('\n');
+  L.push('=== FIN RESUMEN ===');
+  L.push('(Pega esto en el chat de Claude para que arme las próximas semanas)');
+  return L.join('\n');
 }
 
-// Render
-function render() {
-  const app = document.getElementById('app');
+/* ============ RENDER ============ */
+function render(){
   const s = weekStats(currentWeek);
-  const wd = weightDiff();
-  const weekData = data.weeks[currentWeek];
+  const wk = data.weeks[currentWeek];
+  let h = '';
 
-  let html = '';
+  h += `<header class="masthead">
+    <h1>Plan</h1>
+    <div class="week-tag">Semana ${currentWeek}</div>
+  </header>`;
 
-  // Header
-  html += `<div class="header" style="margin-bottom:20px">
-    <h1>PLAN FLEXIBLE</h1>
-    <p>Asigna bloques a los días que quieras</p>
-  </div>`;
+  if (view === 'today')      h += viewToday(wk, s);
+  else if (view === 'week')  h += viewWeek(wk, s);
+  else if (view === 'prog')  h += viewProgress();
+  else if (view === 'blocks')h += viewBlocks();
+  else if (view === 'body')  h += viewBody();
+  else if (view === 'export')h += viewExport();
 
-  // Week selector + stats only on tracker view
-  if (view === 'tracker') {
-    const weekNums = Object.keys(data.weeks).map(Number).sort((a,b)=>a-b);
-    const idx = weekNums.indexOf(currentWeek);
-    const prevW = idx > 0 ? weekNums[idx-1] : null;
-    const nextW = idx < weekNums.length-1 ? weekNums[idx+1] : null;
-    const canDelete = weekNums.length > 1;
-
-    html += '<div class="week-nav">';
-    html += `<button class="week-arrow" ${prevW===null?'disabled':''} onclick="${prevW!==null?`selectWeek(${prevW})`:''}">‹</button>`;
-    html += `<div class="week-current">
-      <span class="week-current-label">Semana ${currentWeek}</span>
-      <span class="week-current-sub">${idx+1} de ${weekNums.length}</span>
-    </div>`;
-    html += `<button class="week-arrow" ${nextW===null?'disabled':''} onclick="${nextW!==null?`selectWeek(${nextW})`:''}">›</button>`;
-    html += `<button class="week-add" onclick="addWeek()" title="Añadir semana">+</button>`;
-    if (canDelete) {
-      html += `<button class="week-del-nav" onclick="deleteWeek(${currentWeek})" title="Eliminar esta semana">✕</button>`;
-    }
-    html += '</div>';
-
-    html += '<div class="stats">';
-    html += `<div class="stat"><div class="stat-label">Hechos</div><div class="stat-val">${s.completed}/${s.assigned||'—'}</div><div class="stat-sub">esta semana</div></div>`;
-    html += `<div class="stat"><div class="stat-label">Pasos Ø</div><div class="stat-val">${s.avgSteps>0?s.avgSteps.toLocaleString():'—'}</div><div class="stat-sub">${s.avgSteps>=6000?'✓ meta':'meta 6k'}</div></div>`;
-    html += `<div class="stat"><div class="stat-label">Peso</div><div class="stat-val">${data.weight.current||'—'}</div><div class="stat-sub">${wd?`${Number(wd)>0?'+':''}${wd} kg`:'registrar'}</div></div>`;
-    html += '</div>';
-  }
-
-  // Views
-  if (view === 'tracker') html += renderTracker(weekData);
-  else if (view === 'progress') html += renderProgress();
-  else if (view === 'blocks') html += renderBlocks();
-  else if (view === 'peso') html += renderWeight(wd);
-  else if (view === 'export') html += renderExport();
-
-  // Footer
-  html += `<div class="footer">
-    <div class="footer-main">Constancia > Intensidad</div>
-    <div class="footer-sub">Fútbol miércoles = cardio ✓ · Si todo falla → camina + día fuerte</div>
-  </div>`;
-
-  app.innerHTML = html;
+  document.getElementById('app').innerHTML = h;
   renderNav();
+  renderTimer();
 }
 
-function renderTracker(weekData) {
-  let html = '';
+function viewToday(wk, s){
+  const ti = todayIdx();
+  const showToday = isLatestWeek();
+  const d = wk.days[ti];
+  const b = d && d.workout ? getBlock(d.workout) : null;
+  let h = '';
 
-  // Swap mode toggle
-  html += `<div class="swap-bar">
-    <button class="swap-btn ${swapMode?'active':''}" onclick="toggleSwapMode()">
-      ${swapMode ? '✓ Toca 2 días para intercambiar' : '🔄 Reordenar días'}
-    </button>
+  if (showToday){
+    h += `<section class="today ${d.completed?'is-done':''}">
+      <div class="today-eyebrow">Hoy, ${DAYS_LONG[ti-1].toLowerCase()}</div>`;
+    if (b){
+      h += `<div class="today-title">${b.icon} ${b.label}</div>
+        <div class="today-meta">${b.duration}${b.rounds?' · '+b.rounds:''}</div>
+        <div class="today-actions">
+          <button class="btn btn-primary ${d.completed?'done':''}" onclick="toggleCheck(${ti})">
+            ${d.completed?'✓ Completado':'Marcar como hecho'}
+          </button>
+          <button class="btn btn-ghost" onclick="goDay(${ti})">Detalle</button>
+        </div>`;
+    } else {
+      h += `<div class="today-title">Descanso</div>
+        <div class="today-rest">Sin bloque asignado. Igual apunta a ${STEP_GOAL.toLocaleString()} pasos.</div>
+        <div class="today-actions" style="margin-top:15px">
+          <button class="btn btn-ghost" style="flex:1" onclick="goDay(${ti})">Asignar bloque</button>
+        </div>`;
+    }
+    h += `</section>`;
+  }
+
+  h += `<div class="stats">
+    <div class="stat"><div class="stat-k">Entrenos</div><div class="stat-v">${s.completed}/${s.assigned||'—'}</div><div class="stat-n">esta semana</div></div>
+    <div class="stat"><div class="stat-k">Pasos</div><div class="stat-v">${s.avgSteps>0?s.avgSteps.toLocaleString():'—'}</div><div class="stat-n ${s.avgSteps>=STEP_GOAL?'hit':''}">${s.avgSteps>=STEP_GOAL?'meta lograda':'meta '+(STEP_GOAL/1000)+'k'}</div></div>
+    <div class="stat"><div class="stat-k">Peso</div><div class="stat-v">${data.weight.current||'—'}</div><div class="stat-n">${weightDiff()?(Number(weightDiff())>0?'+':'')+weightDiff()+' kg':'sin registrar'}</div></div>
   </div>`;
 
-  for (let day = 1; day <= 7; day++) {
-    const d = weekData.days[day];
-    const block = d.workout ? getBlock(d.workout) : null;
-    const key = `${currentWeek}-${day}`;
-    const isActive = activeDay === key;
-    const isPicking = picking === key;
-    const isOpen = isActive || isPicking;
-    const isSwapFirst = swapMode && swapFirst === day;
-
-    html += `<div class="day-row ${isOpen?'open':''} ${d.completed?'done':''} ${isSwapFirst?'swap-selected':''}" onclick="dayClick(${day})">`;
-    html += `<div class="day-label">${DAYS[day-1]}</div>`;
-    if (block) {
-      html += `<div><div class="day-workout ${d.completed?'done-text':''}">${block.icon} ${block.label}</div>
-        <div class="day-meta">${block.duration}${block.rounds?' · '+block.rounds:''}</div></div>`;
-      html += `<div class="day-steps">${d.steps?Number(d.steps).toLocaleString()+'👣':''}</div>`;
-      if (swapMode) {
-        html += `<div class="swap-icon">${isSwapFirst?'1️⃣':'↕'}</div>`;
-      } else {
-        html += `<button class="check-btn ${d.completed?'checked':''}" onclick="event.stopPropagation();toggleCheck(${day})">${d.completed?'✓':''}</button>`;
-      }
-    } else {
-      html += `<div class="day-empty">Toca para asignar...</div><div></div>`;
-      if (swapMode) {
-        html += `<div class="swap-icon">${isSwapFirst?'1️⃣':'↕'}</div>`;
-      } else {
-        html += `<div style="width:30px"></div>`;
-      }
-    }
-    html += '</div>';
-
-    if (isPicking) {
-      html += `<div class="panel"><div class="panel-label">Elegir bloque para ${DAYS[day-1]}</div><div class="picker-grid">`;
-      BLOCKS.forEach(b => {
-        html += `<button class="picker-btn" onclick="assignBlock(${day},'${b.id}')">
-          <div><span class="icon">${b.icon}</span> <span class="name">${b.label}</span></div>
-          <div class="dur">${b.duration}</div></button>`;
-      });
-      html += `<button class="picker-rest" onclick="assignBlock(${day},null)">Descanso (sin bloque)</button>`;
-      html += '</div></div>';
-    }
-
-    if (isActive && block) {
-      html += '<div class="panel">';
-      // Exercises
-      html += '<div class="panel-label">Ejercicios</div>';
-      block.exercises.forEach(ex => {
-        html += `<div class="ex-row"><span>${ex.name}</span><span class="ex-reps">${ex.reps}</span></div>`;
-      });
-      // Steps + feeling
-      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 10px">';
-      html += `<div><div class="field-label">Pasos</div><input class="input" type="number" placeholder="7000" value="${d.steps}" oninput="updateField(${day},'steps',this.value)"></div>`;
-      html += `<div><div class="field-label">Cómo fue</div><div class="feeling-grid">`;
-      FEELINGS.forEach(f => {
-        html += `<button class="feeling-btn ${d.feeling===f?'selected':''}" onclick="setFeeling(${day},'${f}')">${f}</button>`;
-      });
-      html += '</div></div></div>';
-      // Notes
-      html += `<div><div class="field-label">Notas</div><input class="input-text" type="text" placeholder="Ej: los burpees estuvieron heavy..." value="${escHtml(d.notes)}" oninput="updateField(${day},'notes',this.value)"></div>`;
-      // Buttons
-      html += `<div class="btn-row">
-        <button class="btn-change" onclick="startPicking(${day})">Cambiar bloque</button>
-        <button class="btn-remove" onclick="clearDay(${day})">Quitar</button>
-      </div>`;
-      html += '</div>';
-    }
+  h += `<div class="section-head"><h2>Resto de la semana</h2></div>`;
+  h += `<div class="days">`;
+  for (let i=1;i<=7;i++){
+    if (showToday && i===ti) continue;
+    h += dayRow(wk, i, ti, showToday);
   }
-  return html;
+  h += `</div>`;
+  return h;
 }
 
-function renderProgress() {
-  const weeks = Object.keys(data.weeks).map(Number).sort((a,b)=>a-b);
-  if (weeks.length === 0) return '<p style="color:var(--text-faint);text-align:center;padding:40px 0">Sin datos aún</p>';
+function viewWeek(wk, s){
+  const nums = Object.keys(data.weeks).map(Number).sort((a,b)=>a-b);
+  const i = nums.indexOf(currentWeek);
+  const prev = i>0 ? nums[i-1] : null, next = i<nums.length-1 ? nums[i+1] : null;
+  const ti = todayIdx(), showToday = isLatestWeek();
 
-  let html = '<div class="panel-label" style="margin-bottom:12px">Evolución por semana</div>';
+  let h = `<div class="weekbar">
+    <button class="wb-btn" ${prev===null?'disabled':''} onclick="${prev!==null?'selectWeek('+prev+')':''}" aria-label="Semana anterior">‹</button>
+    <div class="wb-center"><b>Semana ${currentWeek}</b><span>${i+1} de ${nums.length}</span></div>
+    <button class="wb-btn" ${next===null?'disabled':''} onclick="${next!==null?'selectWeek('+next+')':''}" aria-label="Semana siguiente">›</button>
+    <button class="wb-btn wb-add" onclick="addWeek()" aria-label="Añadir semana">+</button>
+    ${nums.length>1?`<button class="wb-btn wb-del" onclick="deleteWeek(${currentWeek})" aria-label="Eliminar semana">✕</button>`:''}
+  </div>`;
 
-  // Compute global max for steps bar scaling
-  const allStats = weeks.map(w => weekStats(w));
-  const maxSteps = Math.max(...allStats.map(s => s.avgSteps), 7000);
+  h += `<div class="stats">
+    <div class="stat"><div class="stat-k">Entrenos</div><div class="stat-v">${s.completed}/${s.assigned||'—'}</div><div class="stat-n">completados</div></div>
+    <div class="stat"><div class="stat-k">Pasos</div><div class="stat-v">${s.avgSteps>0?s.avgSteps.toLocaleString():'—'}</div><div class="stat-n ${s.avgSteps>=STEP_GOAL?'hit':''}">${s.avgSteps>=STEP_GOAL?'meta lograda':'meta '+(STEP_GOAL/1000)+'k'}</div></div>
+    <div class="stat"><div class="stat-k">Peso</div><div class="stat-v">${data.weight.current||'—'}</div><div class="stat-n">${weightDiff()?(Number(weightDiff())>0?'+':'')+weightDiff()+' kg':'sin registrar'}</div></div>
+  </div>`;
 
-  html += '<div style="display:flex;flex-direction:column;gap:8px">';
-  weeks.forEach((w, i) => {
-    const s = allStats[i];
-    const stepsPct = Math.min(100, (s.avgSteps / maxSteps) * 100);
-    const completionPct = s.assigned > 0 ? (s.completed / s.assigned) * 100 : 0;
-    const stepsColor = s.avgSteps >= 6000 ? 'var(--green)' : s.avgSteps >= 4500 ? 'var(--yellow)' : 'var(--orange)';
+  h += `<div class="section-head"><h2>Días</h2>
+    <button class="link-btn ${swapMode?'on':''}" onclick="toggleSwap()">${swapMode?'Toca 2 días para cambiar':'Reordenar'}</button>
+  </div>`;
+  h += `<div class="days">`;
+  for (let i2=1;i2<=7;i2++) h += dayRow(wk, i2, ti, showToday);
+  h += `</div>`;
+  return h;
+}
 
-    html += `<div style="background:var(--surface);border-radius:10px;padding:14px;border:1px solid var(--border)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div style="font-size:13px;font-weight:700;color:#fff">Semana ${w}</div>
-        <div style="font-size:11px;color:${s.completed === s.assigned && s.assigned > 0 ? 'var(--green-dim)' : 'var(--text-faint)'};font-family:var(--mono)">
-          ${s.completed}/${s.assigned || '—'} ${s.completed === s.assigned && s.assigned > 0 ? '✓' : ''}
-        </div>
-      </div>
-      <div style="margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-faint);margin-bottom:3px">
-          <span>PASOS Ø</span>
-          <span style="font-family:var(--mono);color:${stepsColor}">${s.avgSteps > 0 ? s.avgSteps.toLocaleString() : '—'}</span>
-        </div>
-        <div style="height:6px;background:#0a0a0c;border-radius:3px;overflow:hidden">
-          <div style="height:100%;width:${stepsPct}%;background:${stepsColor};border-radius:3px;transition:width 0.3s"></div>
-        </div>
-      </div>
-      <div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-faint);margin-bottom:3px">
-          <span>COMPLETADO</span>
-          <span style="font-family:var(--mono)">${Math.round(completionPct)}%</span>
-        </div>
-        <div style="height:6px;background:#0a0a0c;border-radius:3px;overflow:hidden">
-          <div style="height:100%;width:${completionPct}%;background:var(--green);border-radius:3px;transition:width 0.3s"></div>
-        </div>
-      </div>
+function dayRow(wk, i, ti, showToday){
+  const d = wk.days[i];
+  const b = d.workout ? getBlock(d.workout) : null;
+  const isOpen = openDay === i, isPick = pickDay === i;
+  const isToday = showToday && i === ti;
+  const isSwapSel = swapMode && swapFirst === i;
+  let h = '';
+
+  h += `<div class="day ${isOpen||isPick?'open':''} ${d.completed?'done':''} ${isToday?'today-row':''} ${isSwapSel?'picked':''}" onclick="dayTap(${i})">
+    <div class="day-when">
+      <span class="day-abbr">${DAYS[i-1]}</span>
+      ${isToday?'<span class="day-dot"></span>':''}
+    </div>`;
+
+  if (b){
+    h += `<div>
+      <div class="day-name">${b.icon} ${b.label}</div>
+      <div class="day-sub">${b.duration}${b.rounds?' · '+b.rounds:''}</div>
+    </div>
+    <div class="day-steps">${d.steps?Number(d.steps).toLocaleString():''}</div>`;
+    h += swapMode
+      ? `<div class="swap-mark">${isSwapSel?'①':'↕'}</div>`
+      : `<button class="check ${d.completed?'on':''} ${popDay===i?'pop':''}" onclick="event.stopPropagation();toggleCheck(${i})" aria-label="Marcar hecho">${d.completed?'✓':''}</button>`;
+  } else {
+    h += `<div class="day-empty">Asignar bloque</div><div></div>`;
+    h += swapMode ? `<div class="swap-mark">${isSwapSel?'①':'↕'}</div>` : `<div style="width:44px"></div>`;
+  }
+  h += `</div>`;
+
+  if (isPick){
+    h += `<div class="drawer"><div class="picker">`;
+    BLOCKS.forEach(bl=>{
+      h += `<button class="pick" onclick="assign(${i},'${bl.id}')"><b>${bl.icon} ${bl.label}</b><span>${bl.duration}</span></button>`;
+    });
+    h += `<button class="pick pick-rest" onclick="assign(${i},null)">Dejar como descanso</button>`;
+    h += `</div></div>`;
+  }
+
+  if (isOpen && b){
+    h += `<div class="drawer">`;
+    b.exercises.forEach(ex=>{
+      const secs = parseSeconds(ex.reps);
+      h += `<div class="ex"><span class="ex-name">${esc(ex.name)}</span><span class="ex-right">
+        <span class="ex-reps">${esc(ex.reps)}</span>
+        ${secs?`<button class="ex-timer" onclick="event.stopPropagation();startTimer(${secs},'${esc(ex.name).replace(/'/g,"")}')" aria-label="Temporizador">▶</button>`:''}
+      </span></div>`;
+    });
+    h += `<div class="fields">
+      <div><div class="flabel">Pasos del día</div>
+        <input class="inp" type="number" inputmode="numeric" placeholder="${STEP_GOAL}" value="${d.steps}" oninput="setField(${i},'steps',this.value)"></div>
+      <div><div class="flabel">Cómo se sintió</div><div class="moods">
+        ${MOODS.map(m=>`<button class="mood ${d.feeling===m?'on':''}" onclick="setMood(${i},'${m}')">${m}</button>`).join('')}
+      </div></div>
+    </div>
+    <div><div class="flabel">Notas</div>
+      <input class="inp" type="text" placeholder="Qué costó, qué salió bien..." value="${esc(d.notes)}" oninput="setField(${i},'notes',this.value)"></div>
+    <div class="drawer-actions">
+      <button class="da" onclick="openPicker(${i})">Cambiar bloque</button>
+      <button class="da danger" onclick="clearDay(${i})">Quitar</button>
+    </div></div>`;
+  }
+  return h;
+}
+
+function viewProgress(){
+  const nums = Object.keys(data.weeks).map(Number).sort((a,b)=>a-b);
+  if (!nums.length) return '<div class="empty">Todavía no hay semanas registradas.</div>';
+  const all = nums.map(weekStats);
+  const maxS = Math.max(...all.map(x=>x.avgSteps), STEP_GOAL);
+  let h = `<div class="section-head"><h2>Semana a semana</h2></div>`;
+
+  nums.forEach((w,i)=>{
+    const s = all[i];
+    const sp = Math.min(100,(s.avgSteps/maxS)*100);
+    const cp = s.assigned>0 ? (s.completed/s.assigned)*100 : 0;
+    const col = s.avgSteps>=STEP_GOAL ? 'var(--sage)' : s.avgSteps>=5000 ? 'var(--amber)' : 'var(--rust)';
+    const full = s.assigned>0 && s.completed===s.assigned;
+    h += `<div class="prow">
+      <div class="prow-top"><span class="prow-week">Semana ${w}</span>
+        <span class="prow-score ${full?'full':''}">${s.completed}/${s.assigned||'—'}${full?' ✓':''}</span></div>
+      <div class="bar-wrap"><div class="bar-top"><span>Pasos promedio</span><b style="color:${col}">${s.avgSteps>0?s.avgSteps.toLocaleString():'—'}</b></div>
+        <div class="bar"><i style="width:${sp}%;background:${col}"></i></div></div>
+      <div class="bar-wrap"><div class="bar-top"><span>Entrenos</span><b>${Math.round(cp)}%</b></div>
+        <div class="bar"><i style="width:${cp}%;background:var(--sage)"></i></div></div>
     </div>`;
   });
-  html += '</div>';
 
-  // Summary card
-  const totalCompleted = allStats.reduce((sum, s) => sum + s.completed, 0);
-  const validWeeks = allStats.filter(s => s.avgSteps > 0);
-  const overallAvgSteps = validWeeks.length > 0
-    ? Math.round(validWeeks.reduce((sum, s) => sum + s.avgSteps, 0) / validWeeks.length)
-    : 0;
+  const totC = all.reduce((s,x)=>s+x.completed,0);
+  const valid = all.filter(x=>x.avgSteps>0);
+  const avgAll = valid.length ? Math.round(valid.reduce((s,x)=>s+x.avgSteps,0)/valid.length) : 0;
+  h += `<div class="totals">
+    <div><b>${totC}</b><span>entrenos completados</span></div>
+    <div><b>${avgAll>0?avgAll.toLocaleString():'—'}</b><span>pasos promedio histórico</span></div>
+  </div>`;
+  return h;
+}
 
-  html += `<div style="margin-top:16px;background:linear-gradient(135deg,#111127,#0F1A2E);border-radius:10px;padding:16px;border:1px solid #1E2545">
-    <div style="font-size:11px;color:var(--indigo);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Acumulado total</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div>
-        <div style="font-size:22px;font-weight:700;color:#fff;font-family:var(--mono)">${totalCompleted}</div>
-        <div style="font-size:10px;color:var(--text-faint)">entrenos hechos</div>
-      </div>
-      <div>
-        <div style="font-size:22px;font-weight:700;color:#fff;font-family:var(--mono)">${overallAvgSteps > 0 ? overallAvgSteps.toLocaleString() : '—'}</div>
-        <div style="font-size:10px;color:var(--text-faint)">pasos Ø histórico</div>
-      </div>
+function viewBlocks(){
+  let h = `<div class="section-head"><h2>Bloques</h2></div>
+    <p style="font-size:13.5px;color:var(--paper-faint);margin-bottom:14px">Asígnalos a cualquier día desde la vista Semana.</p>`;
+  BLOCKS.forEach(b=>{
+    h += `<div class="bcard">
+      <h3>${b.icon} ${b.label}</h3>
+      <div class="bmeta">${b.duration}${b.rounds?' · '+b.rounds:''}</div>
+      <div class="bdesc">${b.desc}</div>`;
+    b.exercises.forEach(ex=>{
+      h += `<div class="ex"><span class="ex-name">${esc(ex.name)}</span><span class="ex-reps">${esc(ex.reps)}</span></div>`;
+    });
+    h += `</div>`;
+  });
+  return h;
+}
+
+function viewBody(){
+  const wd = weightDiff(), cd = waistDiff();
+  let h = `<div class="mcard">
+    <h3>Peso</h3>
+    <p class="hint">Pésate siempre a la misma hora, idealmente en ayunas.</p>
+    <div class="mgrid">
+      <div><div class="flabel">Inicio</div><div class="mbig">${data.weight.start}<i> kg</i></div></div>
+      <div><div class="flabel">Actual</div>
+        <input class="inp" style="font-size:20px" type="number" step="0.1" inputmode="decimal" placeholder="—" value="${data.weight.current}" oninput="setWeight(this.value)"></div>
+    </div>`;
+  if (wd) h += `<div class="delta ${Number(wd)<=0?'down':'up'}">${Number(wd)<=0?'↓':'↑'} ${Math.abs(Number(wd))} kg<em>${Number(wd)<=0?'desde el inicio':'puede ser músculo o agua'}</em></div>`;
+  h += `</div>`;
+
+  h += `<div class="mcard">
+    <h3>Cintura</h3>
+    <p class="hint">A la altura del ombligo, relajado, sin apretar. Cada 2 o 3 semanas. Baja aunque el peso no se mueva.</p>
+    <div class="mgrid">
+      <div><div class="flabel">Inicio</div>
+        <input class="inp" style="font-size:20px" type="number" step="0.5" inputmode="decimal" placeholder="—" value="${data.waist.start}" oninput="setWaist('start',this.value)"></div>
+      <div><div class="flabel">Actual</div>
+        <input class="inp" style="font-size:20px" type="number" step="0.5" inputmode="decimal" placeholder="—" value="${data.waist.current}" oninput="setWaist('current',this.value)"></div>
+    </div>`;
+  if (cd) h += `<div class="delta ${Number(cd)<=0?'down':'up'}">${Number(cd)<=0?'↓':'↑'} ${Math.abs(Number(cd))} cm<em>desde el inicio</em></div>`;
+  h += `</div>`;
+
+  h += `<div class="mcard"><h3>Empezar de nuevo</h3>
+    <p class="hint">Borra todas las semanas y medidas. No se puede deshacer.</p>
+    <button class="da danger" style="width:100%" onclick="resetAll()">Borrar todo</button></div>`;
+  return h;
+}
+
+function viewExport(){
+  const sum = generateSummary();
+  let h = `<div class="mcard">
+    <h3>Resumen para Claude</h3>
+    <p class="hint">Copia esto y pégalo en el chat para armar las próximas semanas.</p>
+    <button class="btn ${copied?'btn-primary done':'btn-primary'}" style="width:100%;margin-bottom:14px" onclick="copySummary()">
+      ${copied?'✓ Copiado':'Copiar resumen'}
+    </button>
+    <div class="pre-wrap"><pre>${esc(sum)}</pre></div>
+  </div>
+  <div class="mcard"><h3>Cómo funciona</h3>
+    <div class="steps-list">
+      Registras entrenos y pasos durante la semana.<br>
+      Al terminar, tocas Copiar resumen.<br>
+      Lo pegas en el chat con Claude.<br>
+      Recibes el plan de las próximas semanas.
     </div>
   </div>`;
-
-  return html;
+  return h;
 }
 
-function renderBlocks() {
-  let html = '<p style="font-size:12px;color:#3F3F46;margin:0 0 12px">Bloques disponibles. Asígnalos en la pestaña "Semana".</p>';
-  BLOCKS.forEach(b => {
-    html += `<div class="block-card">
-      <div class="block-header"><span class="block-icon">${b.icon}</span><div><div class="block-name">${b.label}</div><div class="block-dur">${b.duration}${b.rounds?' · '+b.rounds:''}</div></div></div>
-      <div class="block-desc">${b.desc}</div>`;
-    b.exercises.forEach(ex => {
-      html += `<div class="block-ex"><span>${ex.name}</span><span style="font-family:var(--mono);font-size:11px;color:var(--text-ghost)">${ex.reps}</span></div>`;
-    });
-    html += '</div>';
-  });
-  return html;
-}
-
-function renderWeight(wd) {
-  let html = '<div class="weight-card">';
-  html += '<div class="panel-label" style="margin-bottom:14px">Registro de peso</div>';
-  html += '<div class="weight-grid"><div><div style="font-size:11px;color:#3F3F46;margin-bottom:4px">Inicio</div>';
-  html += `<div class="weight-start">${data.weight.start}<span class="weight-unit"> kg</span></div></div>`;
-  html += `<div><div style="font-size:11px;color:#3F3F46;margin-bottom:4px">Actual</div>`;
-  html += `<input class="input-big" type="number" step="0.1" placeholder="75.1" value="${data.weight.current}" oninput="updateWeight(this.value)"></div></div>`;
-  if (wd) {
-    const loss = Number(wd) <= 0;
-    html += `<div class="weight-diff ${loss?'loss':'gain'}">${loss?'↓':'↑'} ${Math.abs(Number(wd))} kg<span class="note">${loss?'Vas bien':'Puede ser músculo o agua'}</span></div>`;
-  }
-  html += '</div>';
-
-  // Waist tracking
-  const waistDiff = (data.waist.start && data.waist.current)
-    ? (Number(data.waist.current) - Number(data.waist.start)).toFixed(1) : null;
-  html += '<div class="weight-card">';
-  html += '<div class="panel-label" style="margin-bottom:6px">Cintura (mejor que el peso)</div>';
-  html += '<p style="font-size:11px;color:var(--text-faint);margin:0 0 14px;line-height:1.5">Mide a la altura del ombligo, relajado. Cada 2 semanas. Baja aunque el peso no se mueva.</p>';
-  html += '<div class="weight-grid"><div><div style="font-size:11px;color:#3F3F46;margin-bottom:4px">Inicio (cm)</div>';
-  html += `<input class="input-big" type="number" step="0.5" placeholder="—" value="${data.waist.start}" oninput="updateWaist('start',this.value)"></div>`;
-  html += `<div><div style="font-size:11px;color:#3F3F46;margin-bottom:4px">Actual (cm)</div>`;
-  html += `<input class="input-big" type="number" step="0.5" placeholder="—" value="${data.waist.current}" oninput="updateWaist('current',this.value)"></div></div>`;
-  if (waistDiff) {
-    const loss = Number(waistDiff) <= 0;
-    html += `<div class="weight-diff ${loss?'loss':'gain'}">${loss?'↓':'↑'} ${Math.abs(Number(waistDiff))} cm<span class="note">${loss?'Buen progreso':'Sigue así'}</span></div>`;
-  }
-  html += '</div>';
-
-  html += `<div style="background:var(--surface);border-radius:10px;padding:16px;border:1px solid var(--border)">
-    <button class="btn-reset" onclick="resetAll()">Resetear todo</button></div>`;
-  return html;
-}
-
-function renderExport() {
-  const summary = generateSummary();
-  let html = `<div style="background:var(--surface);border-radius:10px;padding:20px;border:1px solid var(--border);margin-bottom:14px">
-    <div class="panel-label" style="margin-bottom:6px">Exportar resumen</div>
-    <p style="font-size:12px;color:var(--text-faint);margin:0 0 16px;line-height:1.5">Copia tu resumen y pégalo en el chat de Claude para que arme las próximas semanas.</p>
-    <button class="btn-export ${copied?'copied':''}" onclick="exportSummary()">${copied?'✓ Copiado al portapapeles':'Copiar resumen'}</button>
-    <div class="export-preview"><pre>${escHtml(summary)}</pre></div>
-  </div>`;
-  html += `<div class="howto"><div class="howto-title">¿Cómo usar?</div>
-    <div class="howto-text">1. Registra tus datos durante las 2 semanas\n2. Toca "Copiar resumen"\n3. Abre un chat con Claude\n4. Pega el resumen y dile "arma las próximas 2 semanas"</div></div>`;
-  return html;
-}
-
-function renderNav() {
+function renderNav(){
   const tabs = [
-    { k:'tracker', icon:'📋', l:'Semana' },
-    { k:'progress', icon:'📊', l:'Progreso' },
-    { k:'blocks', icon:'🧱', l:'Bloques' },
-    { k:'peso', icon:'⚖️', l:'Peso' },
-    { k:'export', icon:'📤', l:'Exportar' },
+    {k:'today', i:'◈', l:'Hoy'},
+    {k:'week',  i:'▤', l:'Semana'},
+    {k:'prog',  i:'◲', l:'Progreso'},
+    {k:'blocks',i:'≡', l:'Bloques'},
+    {k:'body',  i:'◎', l:'Medidas'},
+    {k:'export',i:'↗', l:'Exportar'},
   ];
-  document.getElementById('nav').innerHTML = tabs.map(t =>
-    `<button class="nav-btn ${view===t.k?'active':''}" onclick="switchView('${t.k}')">
-      <span class="nav-icon">${t.icon}</span>${t.l}</button>`
+  document.getElementById('nav').innerHTML = tabs.map(t=>
+    `<button class="tab ${view===t.k?'on':''}" onclick="setView('${t.k}')"><i>${t.i}</i>${t.l}</button>`
   ).join('');
 }
 
-function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-// Actions
-function selectWeek(w) { currentWeek = Number(w); activeDay = null; picking = null; view = 'tracker'; render(); }
-function addWeek() {
-  const next = Math.max(...Object.keys(data.weeks).map(Number)) + 1;
-  data.weeks[next] = defaultWeek();
-  save(); currentWeek = next; render();
+/* ============ TIMER ============ */
+function renderTimer(){
+  const ov = document.getElementById('overlay');
+  if (!timer){ ov.innerHTML = ''; return; }
+  const pct = timer.left / timer.total;
+  const C = 2 * Math.PI * 92;
+  ov.innerHTML = `<div class="tmr">
+    <div class="tmr-label">${esc(timer.label)}</div>
+    <div class="tmr-ring">
+      <svg viewBox="0 0 200 200" width="200" height="200">
+        <circle cx="100" cy="100" r="92" fill="none" stroke="var(--line)" stroke-width="7"/>
+        <circle cx="100" cy="100" r="92" fill="none" stroke="${timer.left<=5?'var(--amber)':'var(--sage)'}" stroke-width="7"
+          stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}"/>
+      </svg>
+      <div class="tmr-count ${timer.left<=5?'low':''}">${timer.left}</div>
+    </div>
+    <div class="tmr-btns">
+      <button class="tmr-btn" onclick="stopTimer()">Cancelar</button>
+      <button class="tmr-btn primary" onclick="${timer.paused?'resumeTimer()':'pauseTimer()'}">${timer.paused?'Seguir':'Pausar'}</button>
+    </div>
+  </div>`;
 }
-function deleteWeek(w) {
-  const weekNum = Number(w);
-  const stats = weekStats(weekNum);
-  const hasData = stats.completed > 0 || stats.avgSteps > 0;
-  const msg = hasData
-    ? `¿Eliminar Semana ${weekNum}? Tiene ${stats.completed} entrenos registrados y se perderán.`
-    : `¿Eliminar Semana ${weekNum}?`;
+function startTimer(secs, label){
+  timer = { left:secs, total:secs, label:label, paused:false, id:null };
+  timer.id = setInterval(tick, 1000);
+  renderTimer();
+}
+function tick(){
+  if (!timer || timer.paused) return;
+  timer.left--;
+  if (timer.left <= 0){ buzz([120,80,120]); stopTimer(); return; }
+  if (timer.left <= 3) buzz(40);
+  renderTimer();
+}
+function pauseTimer(){ if(timer){ timer.paused = true; renderTimer(); } }
+function resumeTimer(){ if(timer){ timer.paused = false; renderTimer(); } }
+function stopTimer(){ if (timer && timer.id) clearInterval(timer.id); timer = null; renderTimer(); }
+
+/* ============ ACTIONS ============ */
+function setView(v){ view = v; openDay = null; pickDay = null; swapMode = false; swapFirst = null; render(); }
+function selectWeek(w){ currentWeek = Number(w); openDay=null; pickDay=null; swapFirst=null; render(); }
+function addWeek(){
+  const n = Math.max(...Object.keys(data.weeks).map(Number)) + 1;
+  data.weeks[n] = defaultWeek(); save(); currentWeek = n; view='week'; render();
+}
+function deleteWeek(w){
+  const n = Number(w), s = weekStats(n);
+  const msg = (s.completed>0||s.avgSteps>0)
+    ? `¿Eliminar Semana ${n}? Tiene ${s.completed} entrenos registrados.`
+    : `¿Eliminar Semana ${n}?`;
   if (!confirm(msg)) return;
-  delete data.weeks[weekNum];
-  // If we deleted current week, switch to first available
-  if (currentWeek === weekNum) {
-    const remaining = Object.keys(data.weeks).map(Number).sort((a,b)=>a-b);
-    currentWeek = remaining[0] || 1;
-    if (remaining.length === 0) {
-      data.weeks[1] = defaultWeek();
-    }
+  delete data.weeks[n];
+  const left = Object.keys(data.weeks).map(Number).sort((a,b)=>a-b);
+  if (!left.length){ data.weeks[1] = defaultWeek(); currentWeek = 1; }
+  else if (currentWeek === n) currentWeek = left[left.length-1];
+  openDay=null; pickDay=null; save(); render();
+}
+function goDay(i){ view='week'; openDay=i; pickDay=null; render(); setTimeout(()=>window.scrollTo({top:0,behavior:'smooth'}),0); }
+function dayTap(i){
+  if (swapMode){
+    if (swapFirst === null){ swapFirst = i; render(); return; }
+    if (swapFirst === i){ swapFirst = null; render(); return; }
+    const w = data.weeks[currentWeek];
+    const t = w.days[swapFirst]; w.days[swapFirst] = w.days[i]; w.days[i] = t;
+    save(); swapFirst = null; buzz(25); render(); return;
   }
-  activeDay = null; picking = null;
+  if (pickDay === i){ pickDay = null; render(); return; }
+  const d = data.weeks[currentWeek].days[i];
+  if (!d.workout){ pickDay = i; openDay = null; }
+  else { openDay = openDay===i ? null : i; pickDay = null; }
+  render();
+}
+function toggleCheck(i){
+  const d = data.weeks[currentWeek].days[i];
+  d.completed = !d.completed;
+  if (d.completed){ buzz(35); popDay = i; setTimeout(()=>{ popDay=null; render(); }, 340); }
   save(); render();
 }
-function swapDays(fromDay, toDay) {
-  const week = data.weeks[currentWeek];
-  const tmp = week.days[fromDay];
-  week.days[fromDay] = week.days[toDay];
-  week.days[toDay] = tmp;
-  save();
-  draggedDay = null;
-  render();
+function openPicker(i){ pickDay = i; openDay = null; render(); }
+function assign(i, id){
+  const d = data.weeks[currentWeek].days[i];
+  d.workout = id; d.completed = false;
+  save(); pickDay = null; render();
 }
-function switchView(v) { view = v; activeDay = null; picking = null; render(); }
-
-function dayClick(day) {
-  if (swapMode) {
-    if (swapFirst === null) {
-      swapFirst = day;
-      render();
-      return;
-    }
-    if (swapFirst === day) {
-      swapFirst = null;
-      render();
-      return;
-    }
-    // Perform swap
-    const week = data.weeks[currentWeek];
-    const tmp = week.days[swapFirst];
-    week.days[swapFirst] = week.days[day];
-    week.days[day] = tmp;
-    save();
-    swapFirst = null;
-    render();
-    return;
-  }
-  const key = `${currentWeek}-${day}`;
-  if (picking === key) { picking = null; render(); return; }
-  const d = data.weeks[currentWeek].days[day];
-  if (!d.workout) { picking = key; activeDay = null; }
-  else { activeDay = activeDay === key ? null : key; picking = null; }
-  render();
+function clearDay(i){ data.weeks[currentWeek].days[i] = defaultDay(null); save(); openDay = null; render(); }
+function setField(i, f, v){ data.weeks[currentWeek].days[i][f] = v; save(); }
+function setMood(i, v){ data.weeks[currentWeek].days[i].feeling = v; save(); render(); }
+function setWeight(v){ data.weight.current = v; save(); }
+function setWaist(f, v){ data.waist[f] = v; save(); }
+function toggleSwap(){ swapMode = !swapMode; swapFirst = null; openDay = null; pickDay = null; render(); }
+function resetAll(){
+  if (!confirm('Esto borra todas las semanas y medidas. ¿Continuar?')) return;
+  data = defaultState(); currentWeek = 1; openDay=null; pickDay=null; save(); render();
 }
-
-function toggleSwapMode() {
-  swapMode = !swapMode;
-  swapFirst = null;
-  activeDay = null;
-  picking = null;
-  render();
-}
-
-function toggleCheck(day) {
-  data.weeks[currentWeek].days[day].completed = !data.weeks[currentWeek].days[day].completed;
-  save(); render();
-}
-
-function assignBlock(day, blockId) {
-  data.weeks[currentWeek].days[day].workout = blockId;
-  data.weeks[currentWeek].days[day].completed = false;
-  save(); picking = null; render();
-}
-
-function startPicking(day) {
-  picking = `${currentWeek}-${day}`; activeDay = null; render();
-}
-
-function clearDay(day) {
-  data.weeks[currentWeek].days[day] = defaultDay(null);
-  save(); activeDay = null; render();
-}
-
-function updateField(day, field, value) {
-  data.weeks[currentWeek].days[day][field] = value;
-  save();
-  // Don't re-render for inputs to avoid losing focus
-}
-
-function setFeeling(day, value) {
-  data.weeks[currentWeek].days[day].feeling = value;
-  save();
-  render();
-}
-
-function updateWeight(v) {
-  data.weight.current = v;
-  save();
-}
-
-function updateWaist(field, v) {
-  data.waist[field] = v;
-  save();
-}
-
-function resetAll() {
-  if (!confirm('¿Borrar todo y empezar de nuevo?')) return;
-  data = defaultState();
-  save(); currentWeek = 1; activeDay = null; picking = null; render();
-}
-
-async function exportSummary() {
-  try {
-    await navigator.clipboard.writeText(generateSummary());
-    copied = true; render();
-    setTimeout(() => { copied = false; render(); }, 2500);
-  } catch {
-    // Fallback: select the pre element
-    const pre = document.querySelector('.export-preview pre');
-    if (pre) {
-      const range = document.createRange();
-      range.selectNodeContents(pre);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
+async function copySummary(){
+  try { await navigator.clipboard.writeText(generateSummary()); copied = true; buzz(25); render();
+    setTimeout(()=>{ copied = false; render(); }, 2400);
+  } catch(e){
+    const pre = document.querySelector('.pre-wrap pre');
+    if (pre){ const r = document.createRange(); r.selectNodeContents(pre);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); }
   }
 }
 
-// Init
 load();
 render();
-
-// Register service worker for offline + PWA
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body>
 </html>
