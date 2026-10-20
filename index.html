@@ -884,6 +884,11 @@ function viewExport(){
     </button>
     <div class="pre-wrap"><pre>${esc(sum)}</pre></div>
   </div>
+  <div class="mcard">
+    <h3>Respaldo de datos</h3>
+    <p class="hint">Descarga todos tus datos en un archivo JSON. Guárdalo fuera del teléfono.</p>
+    <button class="btn btn-primary" style="width:100%" onclick="exportJSON()">Exportar datos (JSON)</button>
+  </div>
   <div class="mcard"><h3>Cómo funciona</h3>
     <div class="steps-list">
       Registras entrenos y pasos durante la semana.<br>
@@ -1026,6 +1031,13 @@ function toggleSwap(){ swapMode = !swapMode; swapFirst = null; openDay = null; p
 function resetAll(){
   if (!confirm('Esto borra todas las semanas y medidas. ¿Continuar?')) return;
   data = defaultState(); currentWeek = 1; openDay=null; pickDay=null; save(); render();
+}
+function exportJSON(){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type:'application/json' }));
+  a.download = `plan-fitness-${isoToday()}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 async function copySummary(){
   try { await navigator.clipboard.writeText(generateSummary()); copied = true; buzz(25); render();
